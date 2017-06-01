@@ -1,0 +1,45 @@
+---
+meae-id: ""
+level: ""
+geography: ""
+year: ""
+title: ""
+
+description: |
+  This is the brief description of the contents of the map.
+  
+legend: ""
+
+nnv:
+- id: ""
+  name: ""
+  
+related-maps:
+- id: ""
+  name: ""
+  type: ""
+
+output:
+  md_document:
+    variant: markdown
+always_allow_html: true
+---
+
+```{r setup, include = FALSE}
+library(leaflet)
+library(tidyverse)
+library(USAboundaries)
+library(mappingelections)
+```
+
+```{r election-map, echo = FALSE}
+
+```
+
+```{r election-results, echo = FALSE}
+
+```
+
+## About this election
+
+This is the longer description of the effects of the map.
