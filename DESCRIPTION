@@ -1,0 +1,19 @@
+Package: mappingelections
+Type: Package
+Title: Mapping Early American Elections
+Version: 0.0.0.9000
+Authors@R: c(person("Lincoln", "Mullen",
+                    email = "lincoln@lincolnmullen.com",
+                    role = c("aut", "cre")))
+Description: RMarkdown templates for map pages, map and legend functions for maps.
+    Use four spaces when indenting paragraphs within the Description.
+License: GPL-2 | GPL-3
+Depends:
+    R (>= 3.2.0)
+Imports:
+    leaflet
+Encoding: UTF-8
+LazyData: yes
+URL: https://github.com/mapping-elections/mappingelections
+BugReports: https://github.com/mapping-elections/mappingelections/issues
+RoxygenNote: 6.0.1
