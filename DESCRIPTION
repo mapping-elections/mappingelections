@@ -4,9 +4,23 @@ Title: Mapping Early American Elections
 Version: 0.0.0.9000
 Authors@R: c(person("Lincoln", "Mullen",
                     email = "lincoln@lincolnmullen.com",
-                    role = c("aut", "cre")))
-Description: RMarkdown templates for map pages, map and legend functions for maps.
-    Use four spaces when indenting paragraphs within the Description.
+                    role = c("aut", "cre")),
+             person("Jordan", "Bratt",
+                    email = "jfbratt@gmail.com",
+                    role = "ctb"),
+             person("Sheila", "Brennan",
+                    role = "ctb"),
+             person("Ken", "Albers",
+                    role = "ctb"),
+             person("Rosemarie", "Zagarri",
+                    role = "ctb"),
+             person("Roy Rosenzweig Center for History and New Media",
+                    role = "cph"),
+             person("National Endowment for the Humanities",
+                    role = "fnd"))
+Description: Data from the 'Mapping Early American Elections' project, along
+    with RMarkdown templates for map pages and functions for manipulating the
+    data and mapping it.
 License: GPL-2 | GPL-3
 Depends:
     R (>= 3.2.0)
