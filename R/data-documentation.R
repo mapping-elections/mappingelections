@@ -10,3 +10,6 @@
 
 #' @rdname meae_data
 "meae_elections"
+
+#' @rdname meae_data
+"meae_maps_to_elections"

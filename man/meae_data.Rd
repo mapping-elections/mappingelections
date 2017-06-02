@@ -5,6 +5,7 @@
 \alias{meae_candidates}
 \alias{meae_congressional_counties}
 \alias{meae_elections}
+\alias{meae_maps_to_elections}
 \title{Elections data from Mapping Early American Elections}
 \format{Data frames}
 \usage{
@@ -13,6 +14,8 @@ meae_candidates
 meae_congressional_counties
 
 meae_elections
+
+meae_maps_to_elections
 }
 \description{
 Elections data from Mapping Early American Elections

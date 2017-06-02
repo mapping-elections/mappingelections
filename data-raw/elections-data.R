@@ -1,7 +1,7 @@
 # Convert the elections data from the git submodule to the format for the R
 # package
 
-library(tidyverse)
+suppressPackageStartupMessages(library(tidyverse))
 
 meae_candidates <- read_csv("data-raw/elections-data/candidates.csv",
                             col_types = cols(
@@ -35,5 +35,12 @@ meae_congressional_counties <- read_csv("data-raw/elections-data/congressional-c
                                           vote = col_integer()
                                         ))
 
+meae_maps_to_elections <- read_csv("data-raw/elections-data/maps-to-elections.csv",
+                                   col_types = cols(
+                                     meae_id = col_character(),
+                                     election_id = col_character())
+                                   )
+
 devtools::use_data(meae_candidates, meae_congressional_counties, meae_elections,
+                   meae_maps_to_elections,
                    overwrite = TRUE)
