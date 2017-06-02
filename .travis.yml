@@ -1,0 +1,14 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
+language: R
+r:
+  - oldrel
+  - release
+  - devel
+sudo: false
+cache: packages
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
