@@ -1,0 +1,3 @@
+[submodule "data-raw/elections-data"]
+	path = data-raw/elections-data
+	url = git@github.com:mapping-elections/elections-data.git
