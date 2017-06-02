@@ -1,27 +1,37 @@
 ---
-meae-id: ""
-level: ""
-geography: ""
-year: ""
-title: ""
+meae-id: 
+type: 
+level: 
+state: 
+geography: 
+congressnum: 
 
-description: |
+title: ""
+caption: |
   This is the brief description of the contents of the map.
   
-legend: ""
+legend: fed-vs-repub-percentage
 
 nnv:
-- id: ""
-  name: ""
+- id: 
+  name: 
   
 related-maps:
-- id: ""
-  name: ""
-  type: ""
+- id: 
+  name: 
+  type: previous
+- id: 
+  name: 
+  type: next
+- id: 
+  name: 
+  type: national
 
 output:
   md_document:
     variant: markdown
+  html_document:
+    theme: default
 always_allow_html: true
 ---
 
@@ -32,13 +42,17 @@ library(USAboundaries)
 library(mappingelections)
 ```
 
+<div class="map">
 ```{r election-map, echo = FALSE}
 
 ```
+</div>
 
+<div class="results-table">
 ```{r election-results, echo = FALSE}
 
 ```
+</div>
 
 ## About this election
 
