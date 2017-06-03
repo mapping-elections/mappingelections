@@ -44,7 +44,7 @@ meae_maps <- read_csv("data-raw/elections-data/maps.csv",
                                    col_types = cols(
                                      meae_id = col_character(),
                                      type = col_character(),
-                                     congressnum = col_integer(),
+                                     congress = col_integer(),
                                      state = col_character(),
                                      geography = col_character(),
                                      level = col_character())
