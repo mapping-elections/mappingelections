@@ -25,6 +25,7 @@ License: GPL-2 | GPL-3
 Depends:
     R (>= 3.2.0)
 Imports:
+    dplyr,
     leaflet
 Encoding: UTF-8
 LazyData: yes
