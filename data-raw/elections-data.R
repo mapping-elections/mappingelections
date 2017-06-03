@@ -17,8 +17,7 @@ meae_elections <- read_csv("data-raw/elections-data/elections.csv",
                              congress = col_integer(),
                              district = col_integer(),
                              year = col_integer(),
-                             election_type = col_character(),
-                             election_label = col_character()
+                             election_type = col_character()
                            ))
 
 meae_congressional_counties <- read_csv("data-raw/elections-data/congressional-counties.csv",
@@ -41,6 +40,16 @@ meae_maps_to_elections <- read_csv("data-raw/elections-data/maps-to-elections.cs
                                      election_id = col_character())
                                    )
 
+meae_maps <- read_csv("data-raw/elections-data/maps.csv",
+                                   col_types = cols(
+                                     meae_id = col_character(),
+                                     type = col_character(),
+                                     congressnum = col_integer(),
+                                     state = col_character(),
+                                     geography = col_character(),
+                                     level = col_character())
+                                   )
+
 devtools::use_data(meae_candidates, meae_congressional_counties, meae_elections,
-                   meae_maps_to_elections,
+                   meae_maps_to_elections, meae_maps,
                    overwrite = TRUE)
