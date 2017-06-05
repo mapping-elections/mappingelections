@@ -43,15 +43,19 @@ library(mappingelections)
 ```
 
 <div class="map">
+
 ```{r election-map, echo = FALSE}
 
 ```
+
 </div>
 
 <div class="results-table">
+
 ```{r election-results, echo = FALSE}
 
 ```
+
 </div>
 
 ## About this election
