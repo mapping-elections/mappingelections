@@ -116,13 +116,22 @@ aggregate_party_votes <- function(data, geography = c("county"),
     stop("Unable to aggregate election returns for that type of geography")
   }
 
-  output %>%
-    dplyr::ungroup() %>%
+  output <- output %>%
+    dplyr::ungroup()
+
+  # Guarantee that `other` and party names requested will appear, even if they
+  # received no votes.
+  output <- guarantee_colnames(output, parties = parties)
+
+  # Add basic metadata back in
+  output <- output %>%
     dplyr::mutate(meae_id = meae_id,
                   type = type,
                   office = office,
                   congress = congress,
                   year = year)
+
+  output
 
 }
 
