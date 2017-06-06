@@ -6,6 +6,7 @@
 #' @importFrom dplyr %>%
 #' @import USAboundaries
 #' @import sf
+#' @import rgeos
 NULL
 
 if (getRversion() >= "2.15.1") {
