@@ -15,18 +15,18 @@ vote_counts <- function(map_id) {
   stopifnot(is.character(map_id),
             length(map_id) == 1)
 
-  map <- meae_maps %>%
+  map_data <- meae_maps %>%
     dplyr::filter(meae_id == map_id)
 
-  stopifnot(nrow(map) == 1)
+  stopifnot(nrow(map_data) == 1)
 
-  elections <- map %>%
+  elections <- map_data %>%
     dplyr::left_join(meae_maps_to_elections, by = "meae_id") %>%
     dplyr::left_join(meae_elections, by = "election_id")
 
   stopifnot(nrow(elections) > 0)
 
-  if (map$type == "congressional" && map$geography == "county") {
+  if (map_data$type == "congressional" && map_data$geography == "county") {
 
     votes <- elections %>%
       dplyr::left_join(meae_congressional_counties, by = "election_id")
@@ -75,34 +75,35 @@ aggregate_party_votes <- function(data, geography = c("county"),
 
   if (geography == "county")  {
     aggregates <- data %>%
-      dplyr::group_by(county_ahcb, party) %>%
+      dplyr::group_by(state, county_ahcb, county_fips, party) %>%
       dplyr::summarize(party_vote = sum(vote, na.rm = TRUE)) %>%
-      dplyr::group_by(county_ahcb) %>%
+      dplyr::group_by(state, county_ahcb, county_fips) %>%
       dplyr::mutate(county_vote = sum(party_vote, na.rm = TRUE),
              party_percentage = round(party_vote / county_vote, 3))
 
     votes <- aggregates %>%
-      dplyr::select(county_ahcb, party, party_vote) %>%
+      dplyr::select(state, county_ahcb, county_fips, party, party_vote) %>%
       tidyr::spread(party, party_vote, fill = 0) %>%
       append_colnames("_vote")
 
     county_vote <- aggregates %>%
       dplyr::ungroup() %>%
-      dplyr::distinct(county_ahcb, county_vote)
+      dplyr::distinct(state, county_ahcb, county_fips, county_vote)
 
     percentages <- aggregates %>%
-      dplyr::select(county_ahcb, party, party_percentage) %>%
+      dplyr::select(state, county_ahcb, county_fips, party, party_percentage) %>%
       tidyr::spread(party, party_percentage, fill = 0) %>%
       append_colnames("_percentage")
 
     output <- votes %>%
-      dplyr::left_join(county_vote, by = "county_ahcb") %>%
-      dplyr::left_join(percentages, by = "county_ahcb")
+      dplyr::left_join(county_vote, by = c("state", "county_ahcb", "county_fips")) %>%
+      dplyr::left_join(percentages, by = c("state", "county_ahcb", "county_fips"))
 
   } else {
     stop("Unable to aggregate election returns for that type of geography")
   }
 
-  output
+  output %>%
+    dplyr::ungroup()
 
 }

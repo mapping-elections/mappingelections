@@ -11,5 +11,6 @@ if (getRversion() >= "2.15.1") {
                            "meae_elections", "meae_congressional_counties",
                            "congress.x", "congress.y", "state.x", "state.y",
                            "county_ahcb", "distinct", "party",
-                           "party_percentage", "party_vote", "vote"))
+                           "party_percentage", "party_vote", "vote",
+                           "county_fips", "state"))
 }
