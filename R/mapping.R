@@ -1,0 +1,113 @@
+#' Map elections data
+#'
+#' @param data An \code{sf} object with elections data returned by
+#'   \code{\link{join_to_spatial}}.
+#' @param projection If not provided, then the best state plane projection will
+#'   be guessed using the \code{\link[USAboundaries]{state_plane}} function from
+#'   the \code{USAboundaries} package. If \code{NULL}, then leaflet's default
+#'   Web Mercator projection will be used. To use a custom projection, provide a
+#'   projection/CRS object returned by the \code{\link[leaflet]{leafletCRS}}
+#'   function in the \code{leaflet} package.
+#' @param legend Should a legend be displayed or not?
+#' @param scale The type of scale to use for the choropleth map.
+#'
+#' @examples
+#' votes <- vote_counts("meae.congressional.congress05.ny.county")
+#' aggregates <- aggregate_party_votes(votes)
+#' map_data <- join_to_spatial(aggregates)
+#' map_elections(map_data, legend = TRUE)
+#'
+#' @export
+map_elections <- function(data, projection, legend = FALSE,
+                          scale = federalist_vs_republican) {
+
+  data <- data %>%
+    dplyr::mutate(fed_diff = federalist_percentage - 0.5)
+
+  if (missing(projection)) {
+    # Guess the state plane projection
+    state <- unique(stats::na.omit(data$state))
+    if (length(state) > 1) {
+      warning("More than one state in the data. Using web mercator projection.\n",
+              "Pass a custom projection if you wish.")
+      map <- leaflet::leaflet(data)
+    } else {
+    projection <- leaflet::leafletCRS(crsClass = "L.Proj.CRS",
+      code = paste("ESRI:", USAboundaries::state_plane(state), sep = ""),
+      proj4def = USAboundaries::state_plane(state, type = "proj4"),
+      resolutions = 1.5^(25:15))
+    map <-   map <- leaflet::leaflet(data, options =
+                                       leaflet::leafletOptions(crs = projection))
+    }
+  } else if (is.null(projection)) {
+    # No projection
+    map <- leaflet::leaflet(data)
+  } else {
+    # Use the user-provided projection
+    stopifnot(inherits(projection, "leaflet_crs"))
+    map <- leaflet::leaflet(data,
+                            options = leaflet::leafletOptions(crs = projection))
+
+  }
+
+  map <- map %>%
+    leaflet::addPolygons(
+      stroke = TRUE,
+      smoothFactor = 1,
+      color = "#aaa",
+      opacity = 1,
+      weight = 1,
+      fillOpacity = 1,
+      fillColor = ~scale$palette(fed_diff),
+      popup = ~popup_maker(county = tools::toTitleCase(tolower(name)),
+                           federalist = federalist_vote,
+                           republican = republican_vote,
+                           other = other_vote,
+                           fed_percent = federalist_percentage,
+                           rep_percent = republican_percentage,
+                           oth_percent = other_percentage)
+    )
+
+  if (legend) {
+    map <- map %>%
+      leaflet::addLegend("bottomright",
+                         title = "Election results",
+                         colors = scale$colors,
+                         labels = scale$labels)
+  }
+
+  map
+
+}
+
+#' @rdname map_elections
+#' @export
+federalist_vs_republican <- list(
+  palette = leaflet::colorBin(
+    "PRGn",
+    domain = c(-0.5, 0.5),
+    bins = c(-0.5, -0.375, -0.25, -0.125, -0.01, 0.01, 0.125, 0.25, 0.375, 0.5),
+    na.color = "#808080",
+    alpha = FALSE
+  ),
+  colors = RColorBrewer::brewer.pal(9, "PRGn"),
+  labels = c(
+    "Republicans (> 87.5%)",
+    "Republicans (> 75%)",
+    "Republicans (> 62.5%)",
+    "Republicans (> 51%)",
+    "Tied",
+    "Federalists (> 51%)",
+    "Federalists (> 62.5%)",
+    "Federalists (> 75%)",
+    "Federalists (> 87.5%)"
+  )
+)
+
+popup_maker <- function(county, federalist, republican, other, fed_percent,
+                        rep_percent, oth_percent) {
+  paste0("<b>County: </b>", county, "<br>",
+         "<b>Federalist: </b>", federalist, " (", fed_percent * 100, "%)<br>",
+         "<b>Republican: </b>", republican, " (", rep_percent * 100, "%)<br>",
+         "<b>Other: </b>", other, " (", oth_percent * 100, "%)<br>")
+}
