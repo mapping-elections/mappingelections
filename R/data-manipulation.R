@@ -69,6 +69,16 @@ aggregate_party_votes <- function(data, geography = c("county"),
   stopifnot(is.data.frame(data))
   geography <- match.arg(geography)
 
+  year <- unique(data$year)
+  if (length(year) > 1)
+    warning("These elections happened over more than one year. Using the last year.")
+  year <- max(year)
+
+  meae_id <- unique(data$meae_id)
+  type <- unique(data$type)
+  congress <- unique(data$congress)
+  office <- unique(data$election_office)
+
   # Get just the relevant parties
   data <- data %>%
     dplyr::mutate(party = dplyr::if_else(!party %in% parties, "Other", party))
@@ -104,6 +114,11 @@ aggregate_party_votes <- function(data, geography = c("county"),
   }
 
   output %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>%
+    mutate(meae_id = meae_id,
+           type = type,
+           office = office,
+           congress = congress,
+           year = year)
 
 }
