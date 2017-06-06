@@ -16,6 +16,8 @@
 #' @param scale The type of scale to use for the choropleth map.
 #' @param width The width of the map in pixels or percentage. Passed on to
 #'   \code{\link[leaflet]{leaflet}}.
+#' @param height The height of the map in pixels or percentage. Passed on to
+#'   \code{\link[leaflet]{leaflet}}.
 #'
 #' @examples
 #' votes <- vote_counts("meae.congressional.congress05.ny.county")
@@ -27,7 +29,7 @@
 map_elections <- function(data, projection, legend = FALSE,
                           state_boundaries = TRUE, cities = 3L,
                           scale = federalist_vs_republican,
-                          width = "100%") {
+                          width = "100%", height = NULL) {
 
   stopifnot(is.logical(legend),
             is.logical(state_boundaries),
@@ -44,7 +46,7 @@ map_elections <- function(data, projection, legend = FALSE,
     if (length(state) > 1) {
       warning("More than one state in the data. Using web mercator projection.\n",
               "Pass a custom projection if you wish.")
-      map <- leaflet::leaflet(data, width = width)
+      map <- leaflet::leaflet(data, width = width, height = height)
     } else {
     projection <- leaflet::leafletCRS(crsClass = "L.Proj.CRS",
       code = paste("ESRI:", USAboundaries::state_plane(state), sep = ""),
@@ -52,17 +54,17 @@ map_elections <- function(data, projection, legend = FALSE,
       resolutions = 1.5^(25:15))
     map <-   map <- leaflet::leaflet(data, options =
                                        leaflet::leafletOptions(crs = projection),
-                                     width = width)
+                                     width = width, height = height)
     }
   } else if (is.null(projection)) {
     # No projection
-    map <- leaflet::leaflet(data, width = width)
+    map <- leaflet::leaflet(data, width = width, height = height)
   } else {
     # Use the user-provided projection
     stopifnot(inherits(projection, "leaflet_crs"))
     map <- leaflet::leaflet(data,
                             options = leaflet::leafletOptions(crs = projection),
-                            width = width)
+                            width = width, height = height)
   }
 
   map <- map %>%
@@ -87,7 +89,7 @@ map_elections <- function(data, projection, legend = FALSE,
 
   if (state_boundaries) {
     state_names <- USAboundaries::state_codes %>%
-      dplyr::filter(state_abbr == state)
+      dplyr::filter(state_abbr %in% state)
     state_sf <- USAboundaries::us_states(map_date = unique(data$map_date),
                                          resolution = "high",
                                          states = state_names$state_name)
@@ -108,7 +110,7 @@ map_elections <- function(data, projection, legend = FALSE,
     decade <- trunc(as.integer(format(data$map_date, "%Y")) / 10) * 10
     decade <- unique(stats::na.omit(decade))
     city_locations <- USAboundaries::census_cities %>%
-      dplyr::filter(ST == state,
+      dplyr::filter(ST %in% state,
                     population > 100,
                     year == decade) %>%
       dplyr::group_by(ST) %>%

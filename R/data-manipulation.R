@@ -72,7 +72,8 @@ aggregate_party_votes <- function(data, geography = c("county"),
   years <- unique(data$year)
   if (length(years) > 1) {
     warning("These elections happened over more than one year, from ",
-            range(data$year)[1], " to ", range(data$years)[2], ". Using the year ",
+            range(data$year, na.rm = TRUE)[1], " to ",
+            range(data$year, na.rm = TRUE)[2], ". Using the year ",
             most_common_year(data$year), ", which is the most common year.")
   }
   year <- most_common_year(data$year)
@@ -165,9 +166,17 @@ join_to_spatial <- function(data, geography = c("county"),
 
   states <- data %>%
     dplyr::distinct(state) %>%
+    dplyr::filter(!is.na(state)) %>%
     dplyr::left_join(USAboundaries::state_codes, by = c("state" = "state_abbr"))
 
-  year <- unique(data$year)
+  years <- unique(data$year)
+  if (length(years) > 1) {
+    warning("These elections happened over more than one year, from ",
+            range(data$year, na.rm = TRUE)[1], " to ",
+            range(data$year, na.rm = TRUE)[2], ". Using the year ",
+            most_common_year(data$year), ", which is the most common year.")
+  }
+  year <- most_common_year(data$year)
 
   if (is.null(date)) { date <- as.Date(paste0(year, "-12-31")) }
 
