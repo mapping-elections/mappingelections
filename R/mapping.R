@@ -9,6 +9,7 @@
 #'   projection/CRS object returned by the \code{\link[leaflet]{leafletCRS}}
 #'   function in the \code{leaflet} package.
 #' @param legend Should a legend be displayed or not?
+#' @param state_boundaries Draw state boundaries in addition to county boundaries?
 #' @param scale The type of scale to use for the choropleth map.
 #'
 #' @examples
@@ -19,14 +20,20 @@
 #'
 #' @export
 map_elections <- function(data, projection, legend = FALSE,
+                          state_boundaries = TRUE,
                           scale = federalist_vs_republican) {
+
+  stopifnot(is.logical(legend),
+            is.logical(state_boundaries),
+            is.list(scale))
 
   data <- data %>%
     dplyr::mutate(fed_diff = federalist_percentage - 0.5)
 
+  state <- unique(stats::na.omit(data$state))
+
   if (missing(projection)) {
     # Guess the state plane projection
-    state <- unique(stats::na.omit(data$state))
     if (length(state) > 1) {
       warning("More than one state in the data. Using web mercator projection.\n",
               "Pass a custom projection if you wish.")
@@ -47,16 +54,17 @@ map_elections <- function(data, projection, legend = FALSE,
     stopifnot(inherits(projection, "leaflet_crs"))
     map <- leaflet::leaflet(data,
                             options = leaflet::leafletOptions(crs = projection))
-
   }
 
   map <- map %>%
     leaflet::addPolygons(
+      # layerId = "county",
       stroke = TRUE,
       smoothFactor = 1,
-      color = "#aaa",
+      color = "#bbb",
       opacity = 1,
-      weight = 1,
+      weight = 2,
+      dashArray = "5, 5",
       fillOpacity = 1,
       fillColor = ~scale$palette(fed_diff),
       popup = ~popup_maker(county = tools::toTitleCase(tolower(name)),
@@ -67,6 +75,25 @@ map_elections <- function(data, projection, legend = FALSE,
                            rep_percent = republican_percentage,
                            oth_percent = other_percentage)
     )
+
+  if (state_boundaries) {
+    state_names <- USAboundaries::state_codes %>%
+      dplyr::filter(state_abbr == state)
+    state_sf <- USAboundaries::us_states(map_date = unique(data$map_date),
+                                         resolution = "high",
+                                         states = state_names$state_name)
+    map <- map %>%
+      leaflet::addPolygons(
+        data = state_sf,
+        # layerId = "state",
+        stroke = TRUE,
+        smoothFactor = 1,
+        color = "#222",
+        opacity = 1,
+        weight = 3,
+        fill = NULL
+      )
+  }
 
   if (legend) {
     map <- map %>%
