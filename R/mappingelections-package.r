@@ -4,6 +4,8 @@
 #' @docType package
 #'
 #' @importFrom dplyr %>%
+#' @import USAboundaries
+#' @import sf
 NULL
 
 if (getRversion() >= "2.15.1") {
@@ -12,5 +14,5 @@ if (getRversion() >= "2.15.1") {
                            "congress.x", "congress.y", "state.x", "state.y",
                            "county_ahcb", "distinct", "party",
                            "party_percentage", "party_vote", "vote",
-                           "county_fips", "state"))
+                           "county_fips", "state", "id"))
 }

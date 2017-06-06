@@ -23,7 +23,9 @@ Description: Data from the 'Mapping Early American Elections' project, along
     data and mapping it.
 License: GPL-2 | GPL-3
 Depends:
-    R (>= 3.2.0)
+    R (>= 3.2.0),
+    sf,
+    USAboundaries
 Imports:
     dplyr,
     leaflet,

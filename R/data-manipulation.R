@@ -115,10 +115,57 @@ aggregate_party_votes <- function(data, geography = c("county"),
 
   output %>%
     dplyr::ungroup() %>%
-    mutate(meae_id = meae_id,
-           type = type,
-           office = office,
-           congress = congress,
-           year = year)
+    dplyr::mutate(meae_id = meae_id,
+                  type = type,
+                  office = office,
+                  congress = congress,
+                  year = year)
+
+}
+
+#' Join aggregated party data to spatial data
+#'
+#' @param data A data frame returned by \code{\link{aggregate_party_votes}}.
+#' @param geography The geography to aggregate by for mapping. For instance,
+#'   \code{"county"}.
+#' @param resolution Use \code{"high"} or \code{"low"} resolution geographic
+#'   data.
+#' @param date Override the date for the geographies used in this map. Otherwise
+#'   the appropriate date will be guessed from the data passed in.
+#'
+#' @return A \code{sf} object with polygons for the appropriate geographies and
+#'   the data joined to them.
+#'
+#' @examples
+#' votes <- vote_counts("meae.congressional.congress05.ny.county")
+#' aggregates <- aggregate_party_votes(votes)
+#' join_to_spatial(aggregates, resolution = "low")
+#'
+#' @export
+join_to_spatial <- function(data, geography = c("county"),
+                            resolution = c("high", "low"),
+                            date = NULL) {
+
+  stopifnot(is.data.frame(data))
+  stopifnot(is.null(date) || is.character(date) || inherits(date, "Date"))
+  geography <- match.arg(geography)
+  resolution <- match.arg(resolution)
+
+  states <- data %>%
+    dplyr::distinct(state) %>%
+    dplyr::left_join(USAboundaries::state_codes, by = c("state" = "state_abbr"))
+
+  year <- unique(data$year)
+
+  if (is.null(date)) { date <- as.Date(paste0(year, "-12-31")) }
+
+  spatial <- USAboundaries::us_counties(map_date = date,
+                                        resolution = resolution,
+                                        states = states$state_name) %>%
+    sf::st_as_sf() %>%
+    dplyr::mutate(id = as.character(id))
+
+  dplyr::left_join(spatial, data, by = c("id" = "county_ahcb")) %>%
+    dplyr::mutate(map_date = date)
 
 }
