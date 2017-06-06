@@ -8,7 +8,7 @@
 \format{An object of class \code{list} of length 3.}
 \usage{
 map_elections(data, projection, legend = FALSE, state_boundaries = TRUE,
-  scale = federalist_vs_republican)
+  cities = 3L, scale = federalist_vs_republican)
 
 federalist_vs_republican
 }
@@ -25,7 +25,11 @@ function in the \code{leaflet} package.}
 
 \item{legend}{Should a legend be displayed or not?}
 
-\item{state_boundaries}{Draw state boundaries in addition to county boundaries?}
+\item{state_boundaries}{Draw state boundaries in addition to county
+boundaries?}
+
+\item{cities}{Number of largest cities to draw. Pass \code{FALSE} to not draw
+any cities.}
 
 \item{scale}{The type of scale to use for the choropleth map.}
 }

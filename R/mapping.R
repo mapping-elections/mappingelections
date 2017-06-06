@@ -9,7 +9,10 @@
 #'   projection/CRS object returned by the \code{\link[leaflet]{leafletCRS}}
 #'   function in the \code{leaflet} package.
 #' @param legend Should a legend be displayed or not?
-#' @param state_boundaries Draw state boundaries in addition to county boundaries?
+#' @param state_boundaries Draw state boundaries in addition to county
+#'   boundaries?
+#' @param cities Number of largest cities to draw. Pass \code{FALSE} to not draw
+#'   any cities.
 #' @param scale The type of scale to use for the choropleth map.
 #'
 #' @examples
@@ -20,12 +23,13 @@
 #'
 #' @export
 map_elections <- function(data, projection, legend = FALSE,
-                          state_boundaries = TRUE,
+                          state_boundaries = TRUE, cities = 3L,
                           scale = federalist_vs_republican) {
 
   stopifnot(is.logical(legend),
             is.logical(state_boundaries),
-            is.list(scale))
+            is.list(scale),
+            is.numeric(cities) || cities == FALSE)
 
   data <- data %>%
     dplyr::mutate(fed_diff = federalist_percentage - 0.5)
@@ -93,6 +97,24 @@ map_elections <- function(data, projection, legend = FALSE,
         weight = 3,
         fill = NULL
       )
+  }
+
+  if (cities > 0) {
+    decade <- trunc(as.integer(format(data$map_date, "%Y")) / 10) * 10
+    decade <- unique(stats::na.omit(decade))
+    city_locations <- USAboundaries::census_cities %>%
+      dplyr::filter(ST == state,
+                    population > 100,
+                    year == decade) %>%
+      dplyr::group_by(ST) %>%
+      dplyr::top_n(cities, population)
+
+    map <- map %>%
+      leaflet::addCircleMarkers(data = city_locations, lat = ~LAT, lng = ~LON,
+                                color = "red", opacity = 1,
+                                fill = "red", fillOpacity = 1,
+                                radius = 3,
+                                label = ~City)
   }
 
   if (legend) {
