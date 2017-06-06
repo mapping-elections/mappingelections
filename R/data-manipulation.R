@@ -69,10 +69,13 @@ aggregate_party_votes <- function(data, geography = c("county"),
   stopifnot(is.data.frame(data))
   geography <- match.arg(geography)
 
-  year <- unique(data$year)
-  if (length(year) > 1)
-    warning("These elections happened over more than one year. Using the last year.")
-  year <- max(year)
+  years <- unique(data$year)
+  if (length(years) > 1) {
+    warning("These elections happened over more than one year, from ",
+            range(data$year)[1], " to ", range(data$years)[2], ". Using the year ",
+            most_common_year(data$year), ", which is the most common year.")
+  }
+  year <- most_common_year(data$year)
 
   meae_id <- unique(data$meae_id)
   type <- unique(data$type)

@@ -7,3 +7,7 @@ append_colnames <- function(data, append) {
   colnames(data) <- tolower(replacements)
   data
 }
+
+most_common_year <- function(years) {
+  as.integer(names(sort(table(years), decreasing = TRUE))[1])
+}
