@@ -8,7 +8,7 @@
 \format{An object of class \code{list} of length 3.}
 \usage{
 map_elections(data, projection, legend = FALSE, state_boundaries = TRUE,
-  cities = 3L, scale = federalist_vs_republican)
+  cities = 3L, scale = federalist_vs_republican, width = "100\%")
 
 federalist_vs_republican
 }
@@ -32,6 +32,9 @@ boundaries?}
 any cities.}
 
 \item{scale}{The type of scale to use for the choropleth map.}
+
+\item{width}{The width of the map in pixels or percentage. Passed on to
+\code{\link[leaflet]{leaflet}}.}
 }
 \description{
 Map elections data

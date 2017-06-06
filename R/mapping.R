@@ -14,6 +14,8 @@
 #' @param cities Number of largest cities to draw. Pass \code{FALSE} to not draw
 #'   any cities.
 #' @param scale The type of scale to use for the choropleth map.
+#' @param width The width of the map in pixels or percentage. Passed on to
+#'   \code{\link[leaflet]{leaflet}}.
 #'
 #' @examples
 #' votes <- vote_counts("meae.congressional.congress05.ny.county")
@@ -24,7 +26,8 @@
 #' @export
 map_elections <- function(data, projection, legend = FALSE,
                           state_boundaries = TRUE, cities = 3L,
-                          scale = federalist_vs_republican) {
+                          scale = federalist_vs_republican,
+                          width = "100%") {
 
   stopifnot(is.logical(legend),
             is.logical(state_boundaries),
@@ -41,23 +44,25 @@ map_elections <- function(data, projection, legend = FALSE,
     if (length(state) > 1) {
       warning("More than one state in the data. Using web mercator projection.\n",
               "Pass a custom projection if you wish.")
-      map <- leaflet::leaflet(data)
+      map <- leaflet::leaflet(data, width = width)
     } else {
     projection <- leaflet::leafletCRS(crsClass = "L.Proj.CRS",
       code = paste("ESRI:", USAboundaries::state_plane(state), sep = ""),
       proj4def = USAboundaries::state_plane(state, type = "proj4"),
       resolutions = 1.5^(25:15))
     map <-   map <- leaflet::leaflet(data, options =
-                                       leaflet::leafletOptions(crs = projection))
+                                       leaflet::leafletOptions(crs = projection),
+                                     width = width)
     }
   } else if (is.null(projection)) {
     # No projection
-    map <- leaflet::leaflet(data)
+    map <- leaflet::leaflet(data, width = width)
   } else {
     # Use the user-provided projection
     stopifnot(inherits(projection, "leaflet_crs"))
     map <- leaflet::leaflet(data,
-                            options = leaflet::leafletOptions(crs = projection))
+                            options = leaflet::leafletOptions(crs = projection),
+                            width = width)
   }
 
   map <- map %>%
