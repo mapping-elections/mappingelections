@@ -8,6 +8,15 @@ r:
 sudo: false
 cache: packages
 
+addons:
+  apt:
+    packages:
+      - libgdal-dev
+      - libgeos-dev
+      - libproj-dev
+      - libudunits2-dev
+      - liblwgeom-dev
+
 notifications:
   email:
     on_success: never
