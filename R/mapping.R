@@ -46,24 +46,40 @@ map_elections <- function(data, projection, legend = FALSE,
     if (length(state) > 1) {
       warning("More than one state in the data. Using web mercator projection.\n",
               "Pass a custom projection if you wish.")
-      map <- leaflet::leaflet(data, width = width, height = height)
+      map <- leaflet::leaflet(data, width = width, height = height,
+                              options = leaflet::leafletOptions(
+                                zoomControl = FALSE, dragging = TRUE,
+                                minZoom = 10, maxZoom = 11
+                              ))
     } else {
     projection <- leaflet::leafletCRS(crsClass = "L.Proj.CRS",
       code = paste("ESRI:", USAboundaries::state_plane(state), sep = ""),
       proj4def = USAboundaries::state_plane(state, type = "proj4"),
       resolutions = 1.5^(25:15))
-    map <-   map <- leaflet::leaflet(data, options =
-                                       leaflet::leafletOptions(crs = projection),
+    map <-   map <- leaflet::leaflet(data, options = leaflet::leafletOptions(
+                                         crs = projection,
+                                         zoomControl = FALSE, dragging = TRUE,
+                                         minZoom = 10, maxZoom = 11
+                                         ),
                                      width = width, height = height)
     }
   } else if (is.null(projection)) {
     # No projection
-    map <- leaflet::leaflet(data, width = width, height = height)
+    map <- leaflet::leaflet(data, width = width, height = height,
+                            options = leaflet::leafletOptions(
+                              zoomControl = FALSE, dragging = TRUE,
+                              minZoom = 10, maxZoom = 11
+                            )
+                            )
   } else {
     # Use the user-provided projection
     stopifnot(inherits(projection, "leaflet_crs"))
     map <- leaflet::leaflet(data,
-                            options = leaflet::leafletOptions(crs = projection),
+                            options = leaflet::leafletOptions(
+                              crs = projection,
+                              zoomControl = FALSE, dragging = TRUE,
+                              minZoom = 10, maxZoom = 11
+                              ),
                             width = width, height = height)
   }
 
@@ -133,6 +149,7 @@ map_elections <- function(data, projection, legend = FALSE,
   }
 
   map
+
 
 }
 
