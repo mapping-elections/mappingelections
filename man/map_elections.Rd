@@ -8,7 +8,7 @@
 \format{An object of class \code{list} of length 3.}
 \usage{
 map_elections(data, projection, legend = FALSE, state_boundaries = FALSE,
-  cities = 3L, scale = federalist_vs_republican, width = "100\%",
+  cities = 8L, scale = federalist_vs_republican, width = "100\%",
   height = NULL)
 
 federalist_vs_republican

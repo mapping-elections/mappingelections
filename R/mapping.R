@@ -27,7 +27,7 @@
 #'
 #' @export
 map_elections <- function(data, projection, legend = FALSE,
-                          state_boundaries = FALSE, cities = 3L,
+                          state_boundaries = FALSE, cities = 8L,
                           scale = federalist_vs_republican,
                           width = "100%", height = NULL) {
 
@@ -118,9 +118,9 @@ map_elections <- function(data, projection, legend = FALSE,
 
     map <- map %>%
       leaflet::addCircleMarkers(data = city_locations, lat = ~LAT, lng = ~LON,
-                                color = "red", opacity = 1,
-                                fill = "red", fillOpacity = 1,
-                                radius = 3,
+                                stroke = TRUE, color = "#333", opacity = 1, weight = 1.5,
+                                fill = TRUE, fillColor = "#eaf945", fillOpacity = 1,
+                                radius = 5,
                                 label = ~City)
   }
 
