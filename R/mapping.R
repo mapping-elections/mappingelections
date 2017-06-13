@@ -27,7 +27,7 @@
 #'
 #' @export
 map_elections <- function(data, projection, legend = FALSE,
-                          state_boundaries = TRUE, cities = 3L,
+                          state_boundaries = FALSE, cities = 3L,
                           scale = federalist_vs_republican,
                           width = "100%", height = NULL) {
 
