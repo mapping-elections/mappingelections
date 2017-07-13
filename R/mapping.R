@@ -39,11 +39,11 @@ map_elections <- function(data, projection, legend = FALSE,
   data <- data %>%
     dplyr::mutate(fed_diff = federalist_percentage - 0.5)
 
-  state <- unique(stats::na.omit(data$state))
+  state_to_filter <- unique(stats::na.omit(data$state))
 
   if (missing(projection)) {
     # Guess the state plane projection
-    if (length(state) > 1) {
+    if (length(state_to_filter) > 1) {
       warning("More than one state in the data. Using web mercator projection.\n",
               "Pass a custom projection if you wish.")
       map <- leaflet::leaflet(data, width = width, height = height,
@@ -53,8 +53,8 @@ map_elections <- function(data, projection, legend = FALSE,
                               ))
     } else {
     projection <- leaflet::leafletCRS(crsClass = "L.Proj.CRS",
-      code = paste("ESRI:", USAboundaries::state_plane(state), sep = ""),
-      proj4def = USAboundaries::state_plane(state, type = "proj4"),
+      code = paste("ESRI:", USAboundaries::state_plane(state_to_filter), sep = ""),
+      proj4def = USAboundaries::state_plane(state_to_filter, type = "proj4"),
       resolutions = 1.5^(25:15))
     map <-   map <- leaflet::leaflet(data, options = leaflet::leafletOptions(
                                          crs = projection,
@@ -105,7 +105,7 @@ map_elections <- function(data, projection, legend = FALSE,
 
   if (state_boundaries) {
     state_names <- USAboundaries::state_codes %>%
-      dplyr::filter(state_abbr %in% state)
+      dplyr::filter(state_abbr %in% state_to_filter)
     state_sf <- USAboundaries::us_states(map_date = unique(data$map_date),
                                          resolution = "high",
                                          states = state_names$state_name)
@@ -125,19 +125,19 @@ map_elections <- function(data, projection, legend = FALSE,
   if (cities > 0) {
     decade <- trunc(as.integer(format(data$map_date, "%Y")) / 10) * 10
     decade <- unique(stats::na.omit(decade))
-    city_locations <- USAboundaries::census_cities %>%
-      dplyr::filter(ST %in% state,
+    city_locations <- USAboundariesData::census_cities %>%
+      dplyr::filter(state %in% state_to_filter,
                     population > 100,
                     year == decade) %>%
-      dplyr::group_by(ST) %>%
+      dplyr::group_by(state) %>%
       dplyr::top_n(cities, population)
 
     map <- map %>%
-      leaflet::addCircleMarkers(data = city_locations, lat = ~LAT, lng = ~LON,
+      leaflet::addCircleMarkers(data = city_locations, lat = ~lat, lng = ~lon,
                                 stroke = TRUE, color = "#333", opacity = 1, weight = 1.5,
                                 fill = TRUE, fillColor = "#eaf945", fillOpacity = 1,
                                 radius = 5,
-                                label = ~City)
+                                label = ~city)
   }
 
   if (legend) {
