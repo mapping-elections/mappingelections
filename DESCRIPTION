@@ -23,14 +23,13 @@ Description: Data from the 'Mapping Early American Elections' project, along
     data and mapping it.
 License: GPL-2 | GPL-3
 Depends:
-    R (>= 3.2.0),
-    rgeos,
-    sf,
+    R (>= 3.4.0),
     USAboundaries (>= 0.3.0)
 Imports:
     dplyr,
     leaflet,
-    tidyr
+    sf,
+    tidyr,
 Encoding: UTF-8
 LazyData: yes
 URL: https://github.com/mapping-elections/mappingelections
