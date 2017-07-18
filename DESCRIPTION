@@ -35,3 +35,4 @@ LazyData: yes
 URL: https://github.com/mapping-elections/mappingelections
 BugReports: https://github.com/mapping-elections/mappingelections/issues
 RoxygenNote: 6.0.1
+Suggests: testthat
