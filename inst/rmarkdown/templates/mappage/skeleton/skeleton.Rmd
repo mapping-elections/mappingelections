@@ -7,8 +7,7 @@ geography:
 congressnum: 
 
 title: ""
-caption: |
-  This is the brief description of the contents of the map.
+caption: 
   
 legend: fed-vs-repub-percentage
 
@@ -33,6 +32,8 @@ output:
   html_document:
     theme: default
 always_allow_html: true
+
+layout: maps-show
 ---
 
 ```{r setup, include = FALSE}
