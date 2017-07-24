@@ -3,9 +3,8 @@
 #' @param meae_id A unique Mapping Early American Elections id
 #'
 #' @export
-generate_map_yaml <- function(meae_id, legend = "fed-vs-repub-percentage",
+generate_map_yaml <- function(meae_id, legend_type = "fed-vs-repub-percentage",
                               always_allow_html = "true", layout = "maps-show"){
-
 
     md_doc <- list(variant = "markdown")
     html_doc <- list(theme = "default")
@@ -16,9 +15,10 @@ generate_map_yaml <- function(meae_id, legend = "fed-vs-repub-percentage",
     basic_info <- get_general_info(meae_id)
     caption_title <- get_title_caption(basic_info)
     related_elections <- get_related_elections(meae_id)
+    connected_maps <- get_related_maps(meae_id)
 
 
-    output <- c(basic_info, caption_title, related_elections, final_docs)
+    output <- c(basic_info, caption_title, legend_type, related_elections, connected_maps, final_docs)
     output
 }
 
@@ -51,27 +51,93 @@ proper_case <- function(x){
         sep="", collapse=" ")
 }
 
+# Need to order the districts numerically
 get_related_elections <- function(meae_id){
 
-  counter <- 1
   election_list <- list()
   rel_elect <- meae_maps_to_elections[meae_maps_to_elections$meae_id==meae_id, 2]
 
-  for(i in rel_elect){
+  for(i in 1:nrow(rel_elect)){
 
-    election_info <- meae_elections[meae_elections$election_id == rel_elect[counter], ]
-
+    election_info <- meae_elections[meae_elections$election_id == rel_elect[[1]][i], ]
     name_desc <- paste0(election_info$state, " US Congress ", election_info$year, " District ", election_info$district)
 
-    election <- list(id = rel_elect[counter], name = name_desc)
-
+    election <- list(id = rel_elect[[1]][i], name = name_desc)
     election_list <-  c(election_list, list(election))
 
-    counter <- counter + 1
-  }
-
+}
 
 related_elections <- list(nnv = election_list)
+}
 
+get_related_maps <- function(meae_id){
 
+  congress_num <- as.integer(gsub("\\D", "", meae_id))
+  mapping_id <- strsplit(meae_id, "[.]")
+
+  prev_map <- previous_map(mapping_id, congress_num)
+  nex_map <- next_map(mapping_id, congress_num)
+  nat_map <- national_map(mapping_id, congress_num)
+
+  maps_list <- c(list(prev_map), list(nex_map), list(nat_map))
+
+  related_maps_list <- list(related-maps = maps_list)
+}
+
+previous_map <- function(mapping_id, congress_num){
+
+  if(congress_num >= 2){
+    if(congress_num <= 9){
+      previous_congress <- paste0("0", as.character(congress_num + 1))
+    }else {
+      previous_congress <- as.character(congress_num + 1)
+    }
+
+    previous_id <- paste0(mapping_id[[1]][1], ".", mapping_id[[1]][2], ".", "congress", previous_congress, ".",
+                      mapping_id[[1]][4], ".", mapping_id[[1]][5])
+
+  previous_ordinal <- as.character(congress_numbering[congress_numbering$number == congress_num - 1, 2])
+  previous_name <- paste(toupper(mapping_id[[1]][4]), proper_case(previous_ordinal), "Congress")
+
+  previous_type <- "previous"
+  previous_info <- list(id = previous_id, name = previous_name, type = previous_type)
+  }else {
+    previous_info <- ""
+  }
+  previous_info
+}
+
+next_map <- function(mapping_id, congress_num){
+  if(congress_num <= 18){
+    if(congress_num <= 9){
+      next_congress <- paste0("0", as.character(congress_num + 1))
+    }else {
+      next_congress <- as.character(congress_num + 1)
+    }
+
+  next_id <- paste0(mapping_id[[1]][1], ".", mapping_id[[1]][2], ".", "congress", next_congress, ".",
+                    mapping_id[[1]][4], ".", mapping_id[[1]][5])
+
+  next_ordinal <- as.character(congress_numbering[congress_numbering$number == congress_num + 1, 2])
+  next_name <- paste(toupper(mapping_id[[1]][4]), proper_case(next_ordinal), "Congress")
+
+  next_type <- "next"
+
+  next_info <- list(id = next_id, name = next_name, type = next_type)
+  }else {
+    next_info <- ""
+  }
+  next_info
+}
+
+national_map <- function(mapping_id, congress_num){
+
+  national_id <- paste0(mapping_id[[1]][1], ".", mapping_id[[1]][2], ".", mapping_id[[1]][3], ".national", ".district")
+
+  national_ordinal <- as.character(congress_numbering[congress_numbering$number == congress_num, 2])
+  national_name <- paste(toupper(mapping_id[[1]][4]), proper_case(national_ordinal), "Congress")
+
+  national_type <- "national"
+
+  national_info <- list(id = national_id, name = national_name, type = national_type)
 }
