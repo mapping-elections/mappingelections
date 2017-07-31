@@ -15,5 +15,6 @@ if (getRversion() >= "2.15.1") {
                            "county_ahcb", "distinct", "party",
                            "party_percentage", "party_vote", "vote",
                            "county_fips", "state", "id", "federalist_percentage",
-                           "state_abbr", "ST", "population", "year"))
+                           "state_abbr", "ST", "population", "year",
+                           "congress_numbering", "state_codes"))
 }
