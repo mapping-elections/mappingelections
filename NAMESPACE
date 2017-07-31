@@ -2,6 +2,7 @@
 
 export(aggregate_party_votes)
 export(federalist_vs_republican)
+export(generate_map_yaml)
 export(join_to_spatial)
 export(map_elections)
 export(vote_counts)
