@@ -44,7 +44,8 @@ any cities.}
 Map elections data
 }
 \examples{
-votes <- vote_counts("meae.congressional.congress05.ny.county")
+meae_id <- "meae.congressional.congress05.ny.county"
+votes <- vote_counts(meae_id)
 aggregates <- aggregate_party_votes(votes)
 map_data <- join_to_spatial(aggregates)
 map_elections(map_data, legend = TRUE)

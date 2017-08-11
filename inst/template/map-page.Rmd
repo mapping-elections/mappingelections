@@ -7,12 +7,17 @@ library(leaflet)
 library(tidyverse)
 library(USAboundaries)
 library(mappingelections)
+
+meae_id <- {{meae_id}}
+votes <- vote_counts(meae_id)
+aggregates <- aggregate_party_votes(votes)
+map_data <- join_to_spatial(aggregates)
 ```
 
 <div class="map">
 
 ```{r election-map, echo = FALSE}
-
+map_elections(map_data, legend = TRUE)
 ```
 
 </div>
@@ -20,7 +25,7 @@ library(mappingelections)
 <div class="results-table">
 
 ```{r election-results, echo = FALSE}
-
+tabulate_results(votes)
 ```
 
 </div>
