@@ -28,8 +28,11 @@ Depends:
 Imports:
     dplyr,
     leaflet,
+    readr,
     sf,
     tidyr,
+    whisker,
+    yaml
 Encoding: UTF-8
 LazyData: yes
 URL: https://github.com/mapping-elections/mappingelections
