@@ -3,7 +3,7 @@
 #' @param meae_id A unique Mapping Early American Elections id.
 #' @param legend_type A description of the data visualization. Default set to fed-vs-reub-percentage.
 #' @param always_allow_html Default to TRUE.
-#' @param layout Type of html layout. Default set to maps-show.
+#' @param layout_type Type of html layout. Default set to maps-show.
 #'
 #' @return A list of all the needed metadata for rendering the maps in Jekyll
 #'
@@ -11,7 +11,7 @@
 #' generate_map_metadata(meae_id = "meae.congressional.congress05.ny.county")
 #' @export
 generate_map_metadata <- function(meae_id, legend_type = "fed-vs-repub-percentage",
-                              always_allow_html = TRUE , layout_type = "maps-show"){
+                              always_allow_html = TRUE, layout_type = "maps-show") {
 
   meae_id <- tolower(meae_id)
   stopifnot(meae_id %in% unique(meae_maps$meae_id))
@@ -111,7 +111,7 @@ get_related_maps <- function(meae_id){
 }
 
 previous_map <- function(mapping_id, congress_num){
-  stopifnot(!is.null(meae_id) & !is.null(congress_num))
+  # stopifnot(!is.null(meae_id) & !is.null(congress_num))
 
   if(congress_num >= 2){
     if(congress_num <= 9){
@@ -139,7 +139,7 @@ previous_map <- function(mapping_id, congress_num){
 }
 
 next_map <- function(mapping_id, congress_num){
-  stopifnot(!is.null(meae_id) & !is.null(congress_num))
+  # stopifnot(!is.null(meae_id) & !is.null(congress_num))
 
   if(congress_num <= 18){
     if(congress_num <= 9){
@@ -167,7 +167,7 @@ next_map <- function(mapping_id, congress_num){
 }
 
 national_map <- function(mapping_id, congress_num){
-  stopifnot(!is.null(meae_id) & !is.null(congress_num))
+  # stopifnot(!is.null(meae_id) & !is.null(congress_num))
 
   national_id <- paste0(mapping_id[[1]][1], ".", mapping_id[[1]][2], ".", mapping_id[[1]][3], ".national", ".district")
   national_ordinal <- as.character(congress_numbering[congress_numbering$number == congress_num, 2])

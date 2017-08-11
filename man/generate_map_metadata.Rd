@@ -14,7 +14,7 @@ generate_map_metadata(meae_id, legend_type = "fed-vs-repub-percentage",
 
 \item{always_allow_html}{Default to TRUE.}
 
-\item{layout}{Type of html layout. Default set to maps-show.}
+\item{layout_type}{Type of html layout. Default set to maps-show.}
 }
 \value{
 A list of all the needed metadata for rendering the maps in Jekyll
