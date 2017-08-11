@@ -7,9 +7,9 @@
 \title{Map elections data}
 \format{An object of class \code{list} of length 3.}
 \usage{
-map_elections(data, projection, legend = FALSE, state_boundaries = FALSE,
-  cities = 8L, scale = federalist_vs_republican, width = "100\%",
-  height = NULL)
+map_elections(data, projection = NULL, legend = FALSE,
+  state_boundaries = FALSE, cities = 8L, scale = federalist_vs_republican,
+  width = "100\%", height = NULL)
 
 federalist_vs_republican
 }
@@ -44,7 +44,7 @@ any cities.}
 Map elections data
 }
 \examples{
-meae_id <- "meae.congressional.congress05.ny.county"
+meae_id <- "meae.congressional.congress05.va.county"
 votes <- vote_counts(meae_id)
 aggregates <- aggregate_party_votes(votes)
 map_data <- join_to_spatial(aggregates)

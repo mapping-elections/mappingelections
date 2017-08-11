@@ -20,14 +20,14 @@
 #'   \code{\link[leaflet]{leaflet}}.
 #'
 #' @examples
-#' meae_id <- "meae.congressional.congress05.ny.county"
+#' meae_id <- "meae.congressional.congress05.va.county"
 #' votes <- vote_counts(meae_id)
 #' aggregates <- aggregate_party_votes(votes)
 #' map_data <- join_to_spatial(aggregates)
 #' map_elections(map_data, legend = TRUE)
 #'
 #' @export
-map_elections <- function(data, projection, legend = FALSE,
+map_elections <- function(data, projection = NULL, legend = FALSE,
                           state_boundaries = FALSE, cities = 8L,
                           scale = federalist_vs_republican,
                           width = "100%", height = NULL) {
@@ -42,47 +42,29 @@ map_elections <- function(data, projection, legend = FALSE,
 
   state_to_filter <- unique(stats::na.omit(data$state))
 
-  if (missing(projection)) {
-    # Guess the state plane projection
-    if (length(state_to_filter) > 1) {
-      warning("More than one state in the data. Using web mercator projection.\n",
-              "Pass a custom projection if you wish.")
-      map <- leaflet::leaflet(data, width = width, height = height,
-                              options = leaflet::leafletOptions(
-                                zoomControl = FALSE, dragging = TRUE,
-                                minZoom = 10, maxZoom = 11
-                              ))
-    } else {
+  if (is.null(projection) && length(state_to_filter) == 1) {
+    # Use the state plane projection
     projection <- leaflet::leafletCRS(crsClass = "L.Proj.CRS",
       code = paste("ESRI:", USAboundaries::state_plane(state_to_filter), sep = ""),
       proj4def = USAboundaries::state_plane(state_to_filter, type = "proj4"),
       resolutions = 1.5^(25:15))
-    map <-   map <- leaflet::leaflet(data, options = leaflet::leafletOptions(
-                                         crs = projection,
-                                         zoomControl = FALSE, dragging = TRUE,
-                                         minZoom = 10, maxZoom = 11
-                                         ),
-                                     width = width, height = height)
-    }
-  } else if (is.null(projection)) {
-    # No projection
-    map <- leaflet::leaflet(data, width = width, height = height,
-                            options = leaflet::leafletOptions(
-                              zoomControl = FALSE, dragging = TRUE,
-                              minZoom = 10, maxZoom = 11
-                            )
-                            )
-  } else {
+  } else if (is.null(projection) && length(state_to_filter) > 1) {
+    # Use web mercatore because there is more than one state.
+      warning("More than one state in the data. Disregarding custom projection ",
+              "and using web Mercator.")
+      projection <- NULL
+  } else if (!is.null(projection)) {
     # Use the user-provided projection
     stopifnot(inherits(projection, "leaflet_crs"))
-    map <- leaflet::leaflet(data,
-                            options = leaflet::leafletOptions(
-                              crs = projection,
-                              zoomControl = FALSE, dragging = TRUE,
-                              minZoom = 10, maxZoom = 11
-                              ),
-                            width = width, height = height)
   }
+
+  # Instantiate the map with the data and the projection
+  map <- leaflet::leaflet(data, width = width, height = height,
+                          options = leaflet::leafletOptions(
+                            crs = projection,
+                            zoomControl = FALSE, dragging = TRUE,
+                            minZoom = 8, maxZoom = 11
+                            ))
 
   map <- map %>%
     leaflet::addPolygons(
