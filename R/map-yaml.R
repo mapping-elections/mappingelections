@@ -171,7 +171,7 @@ national_map <- function(mapping_id, congress_num){
 
   national_id <- paste0(mapping_id[[1]][1], ".", mapping_id[[1]][2], ".", mapping_id[[1]][3], ".national", ".district")
   national_ordinal <- as.character(congress_numbering[congress_numbering$number == congress_num, 2])
-  national_name <- paste(toupper(mapping_id[[1]][4]), proper_case(national_ordinal), "Congress")
+  national_name <- paste("National", proper_case(national_ordinal), "Congress")
 
   national_type <- "national"
   national_info <- list(id = national_id, name = national_name, type = national_type)
