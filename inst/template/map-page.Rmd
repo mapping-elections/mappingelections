@@ -8,7 +8,7 @@ library(tidyverse)
 library(USAboundaries)
 library(mappingelections)
 
-meae_id <- {{meae_id}}
+meae_id <- "{{meae_id}}"
 votes <- vote_counts(meae_id)
 aggregates <- aggregate_party_votes(votes)
 map_data <- join_to_spatial(aggregates)
@@ -17,7 +17,7 @@ map_data <- join_to_spatial(aggregates)
 <div class="map">
 
 ```{r election-map, echo = FALSE}
-map_elections(map_data, legend = TRUE)
+map_elections(map_data, legend = FALSE)
 ```
 
 </div>
