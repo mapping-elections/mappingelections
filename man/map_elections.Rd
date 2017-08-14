@@ -26,6 +26,9 @@ function in the \code{leaflet} package.}
 
 \item{legend}{Should a legend be displayed or not?}
 
+\item{congressional_boundaries}{Draw Congressional district boundaries in
+addition to county boundaries?}
+
 \item{state_boundaries}{Draw state boundaries in addition to county
 boundaries?}
 
@@ -39,9 +42,6 @@ any cities.}
 
 \item{height}{The height of the map in pixels or percentage. Passed on to
 \code{\link[leaflet]{leaflet}}.}
-
-\item{congressional}{Draw Congressional district boundaries in addition to
-county boundaries?}
 }
 \description{
 Map elections data

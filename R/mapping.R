@@ -9,8 +9,8 @@
 #'   projection/CRS object returned by the \code{\link[leaflet]{leafletCRS}}
 #'   function in the \code{leaflet} package.
 #' @param legend Should a legend be displayed or not?
-#' @param congressional Draw Congressional district boundaries in addition to
-#'   county boundaries?
+#' @param congressional_boundaries Draw Congressional district boundaries in
+#'   addition to county boundaries?
 #' @param state_boundaries Draw state boundaries in addition to county
 #'   boundaries?
 #' @param cities Number of largest cities to draw. Pass \code{FALSE} to not draw
