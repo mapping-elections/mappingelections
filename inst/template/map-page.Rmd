@@ -10,8 +10,9 @@ library(mappingelections)
 
 meae_id <- "{{meae_id}}"
 votes <- vote_counts(meae_id)
-aggregates <- aggregate_party_votes(votes)
-map_data <- join_to_spatial(aggregates)
+party_aggregates <- aggregate_party_votes(votes)
+candidate_aggregates <- aggregate_candidate_votes(votes)
+map_data <- join_to_spatial(party_aggregates)
 ```
 
 <div class="map">
@@ -25,7 +26,7 @@ map_elections(map_data, legend = FALSE)
 <div class="results-table">
 
 ```{r election-results, echo = FALSE}
-tabulate_results(votes)
+results_to_table(candidate_aggregates)
 ```
 
 </div>

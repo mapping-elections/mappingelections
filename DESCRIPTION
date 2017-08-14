@@ -27,9 +27,12 @@ Depends:
     USAboundaries (>= 0.3.0)
 Imports:
     dplyr,
+    kableExtra,
+    knitr,
     leaflet,
     readr,
     sf,
+    stringr,
     tidyr,
     whisker,
     yaml
