@@ -16,3 +16,10 @@
 
 #' @rdname meae_data
 "meae_maps"
+
+#' Historic Congressional district boundaries
+#'
+#' @format sf polygons object
+#' @source
+#' Jeffrey B. Lewis, Brandon DeVine, Lincoln Pitcher, and Kenneth C. Martis. (2013) Digital Boundary Definitions of United States Congressional Districts, 1789-2012. [Data file and code book]. Retrieved from \url{http://cdmaps.polisci.ucla.edu}.
+"histcongress"

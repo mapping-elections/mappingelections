@@ -9,6 +9,8 @@
 #'   projection/CRS object returned by the \code{\link[leaflet]{leafletCRS}}
 #'   function in the \code{leaflet} package.
 #' @param legend Should a legend be displayed or not?
+#' @param congressional Draw Congressional district boundaries in addition to
+#'   county boundaries?
 #' @param state_boundaries Draw state boundaries in addition to county
 #'   boundaries?
 #' @param cities Number of largest cities to draw. Pass \code{FALSE} to not draw
@@ -28,6 +30,7 @@
 #'
 #' @export
 map_elections <- function(data, projection = NULL, legend = FALSE,
+                          congressional_boundaries = TRUE,
                           state_boundaries = FALSE, cities = 8L,
                           scale = federalist_vs_republican,
                           width = "100%", height = NULL) {
@@ -96,6 +99,23 @@ map_elections <- function(data, projection = NULL, legend = FALSE,
       leaflet::addPolygons(
         data = state_sf,
         # layerId = "state",
+        stroke = TRUE,
+        smoothFactor = 1,
+        color = "#222",
+        opacity = 1,
+        weight = 3,
+        fill = NULL
+      )
+  }
+
+  if (congressional_boundaries) {
+    congress_sf <- histcongress %>%
+      dplyr::filter(statename %in% unique(data$state_name),
+             startcong <= unique(data$congress),
+             unique(data$congress) <= endcong)
+    map <- map %>%
+      leaflet::addPolygons(
+        data = congress_sf,
         stroke = TRUE,
         smoothFactor = 1,
         color = "#222",
