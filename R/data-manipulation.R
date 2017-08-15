@@ -63,6 +63,7 @@ vote_counts <- function(map_id) {
 #' aggregate_party_votes(votes)
 #'
 #' @export
+#' @importFrom dplyr if_else mutate
 aggregate_party_votes <- function(data, geography = c("county"),
                                   parties = c("Federalist", "Republican")) {
 
@@ -123,6 +124,15 @@ aggregate_party_votes <- function(data, geography = c("county"),
   # Guarantee that `other` and party names requested will appear, even if they
   # received no votes.
   output <- guarantee_colnames(output, parties = parties)
+
+  ## Make sure to make data NA if there are no votes
+  output <- output %>%
+    mutate(federalist_vote = if_else(county_vote == 0, NA_real_, federalist_vote)) %>%
+    mutate(republican_vote = if_else(county_vote == 0, NA_real_, republican_vote)) %>%
+    mutate(other_vote = if_else(county_vote == 0, NA_real_, other_vote)) %>%
+    mutate(federalist_percentage = if_else(county_vote == 0, NA_real_, federalist_percentage)) %>%
+    mutate(other_percentage = if_else(county_vote == 0, NA_real_, other_percentage)) %>%
+    mutate(republican_percentage = if_else(county_vote == 0, NA_real_, republican_percentage))
 
   # Add basic metadata back in
   output <- output %>%
