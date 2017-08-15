@@ -6,6 +6,10 @@
 \usage{
 results_to_table(results)
 }
+\arguments{
+\item{results}{The results as returned by
+\code{\link{aggregate_candidate_votes}}.}
+}
 \description{
 Create table of results for election
 }

@@ -17,5 +17,8 @@ if (getRversion() >= "2.15.1") {
                            "county_fips", "state", "id", "federalist_percentage",
                            "state_abbr", "ST", "population", "year",
                            "congress_numbering", "state_codes", "statename",
-                           "startcong", "endcong", "histcongress"))
+                           "startcong", "endcong", "histcongress",
+                           "election_id", "congress", "district", "desc",
+                           "total_vote", "percent_vote", "winner",
+                           "district", "candidate"))
 }

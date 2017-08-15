@@ -27,7 +27,6 @@ Depends:
     USAboundaries (>= 0.3.0)
 Imports:
     dplyr,
-    kableExtra,
     knitr,
     leaflet,
     readr,
@@ -35,7 +34,8 @@ Imports:
     stringr,
     tidyr,
     whisker,
-    yaml
+    yaml,
+    xml2
 Encoding: UTF-8
 LazyData: yes
 URL: https://github.com/mapping-elections/mappingelections

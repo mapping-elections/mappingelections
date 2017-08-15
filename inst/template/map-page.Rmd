@@ -25,8 +25,8 @@ map_elections(map_data, legend = FALSE)
 
 <div class="results-table">
 
-```{r election-results, echo = FALSE}
-results_to_table(candidate_aggregates)
+```{r election-results, echo = FALSE, results='asis'}
+cat(results_to_table(candidate_aggregates))
 ```
 
 </div>
