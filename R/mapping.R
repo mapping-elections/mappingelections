@@ -134,12 +134,14 @@ map_elections <- function(data, projection = NULL, legend = FALSE,
       dplyr::group_by(state) %>%
       dplyr::top_n(cities, population)
 
-    map <- map %>%
-      leaflet::addCircleMarkers(data = city_locations, lat = ~lat, lng = ~lon,
-                                stroke = TRUE, color = "#333", opacity = 1, weight = 1.5,
-                                fill = TRUE, fillColor = "#eaf945", fillOpacity = 1,
-                                radius = 5,
-                                label = ~city)
+    if (nrow(city_locations) > 0) {
+      map <- map %>%
+        leaflet::addCircleMarkers(data = city_locations, lat = ~lat, lng = ~lon,
+                                  stroke = TRUE, color = "#333", opacity = 1, weight = 1.5,
+                                  fill = TRUE, fillColor = "#eaf945", fillOpacity = 1,
+                                  radius = 5,
+                                  label = ~city)
+    }
   }
 
   if (legend) {
