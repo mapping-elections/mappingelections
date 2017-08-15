@@ -88,7 +88,13 @@ get_related_elections <- function(meae_id){
     election <- list(id = rel_elect[[1]][i], name = name_desc)
     election_list <- c(election_list, list(election))
   }
-}
+  }
+
+  # Sort the list by district
+  district_num <- vapply(election_list, function(item) {
+    as.integer(stringr::str_extract(item$name, "\\d+$"))
+  }, integer(1))
+  election_list <- election_list[order(district_num)]
 
   related_elections <- list(nnv = election_list)
 
