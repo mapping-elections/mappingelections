@@ -44,6 +44,8 @@ map_elections <- function(data, projection = NULL, legend = FALSE,
     dplyr::mutate(fed_diff = federalist_percentage - 0.5)
 
   state_to_filter <- unique(stats::na.omit(data$state))
+  statename_to_filter <- unique(stats::na.omit(data$state_terr))
+  congress_num <- unique(stats::na.omit(data$congress))
 
   if (is.null(projection) && length(state_to_filter) == 1) {
     # Use the state plane projection
@@ -52,7 +54,7 @@ map_elections <- function(data, projection = NULL, legend = FALSE,
       proj4def = USAboundaries::state_plane(state_to_filter, type = "proj4"),
       resolutions = 1.5^(25:15))
   } else if (is.null(projection) && length(state_to_filter) > 1) {
-    # Use web mercatore because there is more than one state.
+    # Use web mercator because there is more than one state.
       warning("More than one state in the data. Disregarding custom projection ",
               "and using web Mercator.")
       projection <- NULL
@@ -110,9 +112,9 @@ map_elections <- function(data, projection = NULL, legend = FALSE,
 
   if (congressional_boundaries) {
     congress_sf <- histcongress %>%
-      dplyr::filter(statename %in% unique(data$state_name),
-             startcong <= unique(data$congress),
-             unique(data$congress) <= endcong)
+      dplyr::filter(statename %in% statename_to_filter,
+             startcong <= congress_num,
+             congress_num <= endcong)
     map <- map %>%
       leaflet::addPolygons(
         data = congress_sf,
