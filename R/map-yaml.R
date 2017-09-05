@@ -66,7 +66,8 @@ get_title <- function(basic_info){
 
   map_title <- paste0(proper_case(ordinal), " Congress: ",
                      proper_case(basic_info$state), " ", election_year)
-  output <- list(title = map_title)
+  output <- list(title = map_title,
+                 year = as.integer(election_year))
 
   stopifnot(!is.null(output$title))
   output
@@ -78,7 +79,7 @@ get_related_elections <- function(meae_id){
   rel_elect <- meae_maps_to_elections[meae_maps_to_elections$meae_id == meae_id, 2]
   election_list <- list()
 
-  if(nrow(rel_elect) == 1){
+  if (nrow(rel_elect) == 1) {
     election_info <- meae_elections[meae_elections$election_id == rel_elect[[1]][1], ]
 
     name_desc <- paste0(election_info$state, " US Congress ", election_info$year, " At Large")
