@@ -16,17 +16,17 @@ results_to_table <- function(results) {
 
   formatted_df <- results %>%
     dplyr::mutate(percent_vote = stringr::str_c(round(percent_vote * 100, 0), "%")) %>%
-    dplyr::mutate(winner = ifelse(winner, "elected", "")) %>%
+    dplyr::mutate(winner = ifelse(winner, "✔", "")) %>%
     dplyr::select(District = district,
                   Candidate = candidate,
                   Party = party,
                   Vote = vote,
                   Percentage = percent_vote,
-                  Result = winner
+                  Elected = winner
                   )
   results_kable <- knitr::kable(formatted_df,
                format = "html",
-               align = "cllrrl",
+               align = "cllrrc",
                format.args = list(big.mark = ","))
 
   results_xml <- xml2::read_html(as.character(results_kable))
