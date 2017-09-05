@@ -80,21 +80,32 @@ results_to_table <- function(results) {
 #'   gotten in order to be displayed in the data frame? In othe words, how much
 #'   of a contender did the person have to be?
 #' @examples
-#' meae_id <- "meae.congressional.congress08.md.county"
+#' meae_id <- "meae.congressional.congress08.ny.county"
 #' votes <- vote_counts(meae_id)
 #' aggregate_candidate_votes(votes)
+#' @importFrom dplyr summarize group_by arrange mutate filter ungroup select
 #' @export
-aggregate_candidate_votes <- function(votes, keep_percentage = 0.01) {
+aggregate_candidate_votes <- function(votes, keep_percentage = 0.05) {
   stopifnot(is.data.frame(votes))
 
   votes %>%
-    dplyr::group_by(candidate, election_id, party, congress, district, state) %>%
-    dplyr::summarize(vote = sum(vote, na.rm = TRUE)) %>%
-    dplyr::arrange(state, congress, district, desc(vote)) %>%
-    dplyr::group_by(election_id) %>%
-    dplyr::mutate(total_vote = sum(vote)) %>%
-    dplyr::mutate(percent_vote = vote / total_vote) %>%
-    dplyr::mutate(winner = vote == max(vote)) %>%
-    dplyr::filter(percent_vote > keep_percentage) %>%
-    dplyr::ungroup()
+    group_by(candidate, candidate_id, election_id, party,
+                    congress, district) %>%
+    summarize(vote = sum(vote, na.rm = TRUE)) %>%
+    group_by(election_id) %>%
+    mutate(total_vote = sum(vote)) %>%
+    mutate(percent_vote = vote / total_vote) %>%
+    mutate(contender = percent_vote > keep_percentage) %>%
+    mutate(candidate = ifelse(contender, candidate, "Other candidates")) %>%
+    mutate(candidate_id = ifelse(contender, candidate_id, NA_character_)) %>%
+    mutate(party = ifelse(contender, party, NA_character_)) %>%
+    group_by(election_id, candidate, candidate_id, district, party) %>%
+    summarize(vote = sum(vote, na.rm = TRUE)) %>%
+    group_by(election_id) %>%
+    mutate(total_vote = sum(vote)) %>%
+    mutate(percent_vote = vote / total_vote) %>%
+    mutate(winner = vote == max(vote)) %>%
+    arrange(district, desc(vote)) %>%
+    filter(percent_vote > keep_percentage) %>%
+    ungroup()
 }

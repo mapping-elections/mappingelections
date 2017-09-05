@@ -4,7 +4,7 @@
 \alias{aggregate_candidate_votes}
 \title{Create data frame of results of election by state}
 \usage{
-aggregate_candidate_votes(votes, keep_percentage = 0.01)
+aggregate_candidate_votes(votes, keep_percentage = 0.05)
 }
 \arguments{
 \item{votes}{The votes data frame for the elections}
@@ -18,7 +18,7 @@ This creates a data frame of results for each Congressional district in a
 state.
 }
 \examples{
-meae_id <- "meae.congressional.congress08.md.county"
+meae_id <- "meae.congressional.congress08.ny.county"
 votes <- vote_counts(meae_id)
 aggregate_candidate_votes(votes)
 }
