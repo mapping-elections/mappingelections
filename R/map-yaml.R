@@ -22,17 +22,17 @@ generate_map_metadata <- function(meae_id, legend_type = "fed-vs-repub-percentag
   final_docs <- list(output = docs_output)
 
   legend_type <- list(legend_type = legend_type)
-  always_allow_html <- list (always_allow_html = always_allow_html)
+  always_allow_html <- list(always_allow_html = always_allow_html)
   layout_type <- list(layout = layout_type)
 
 
   basic_info <- get_general_info(meae_id)
-  caption_title <- get_title_caption(basic_info)
+  title <- get_title(basic_info)
   related_elections <- get_related_elections(meae_id)
   connected_maps <- get_related_maps(meae_id)
 
 
-  output <- c(basic_info, caption_title, legend_type, related_elections, connected_maps,
+  output <- c(basic_info, title, legend_type, related_elections, connected_maps,
                 final_docs, always_allow_html, layout_type)
   output
 }
@@ -51,7 +51,7 @@ get_general_info <- function(meae_id){
   output
 }
 
-get_title_caption <- function(basic_info){
+get_title <- function(basic_info){
   stopifnot(!is.null(basic_info))
 
   # ordinal <- as.character(congress_numbering[congress_numbering$number == basic_info$congressnum, 2])
@@ -61,10 +61,9 @@ get_title_caption <- function(basic_info){
 
   map_title <- paste0(proper_case(ordinal), " Congress: ",
                      proper_case(basic_info$state), " ", election_year)
-  caption <- "This is the brief description of the contents of the map."
-  output <- list(title = map_title, caption = caption)
+  output <- list(title = map_title)
 
-  stopifnot(!is.null(output$title) & !is.null(output$caption))
+  stopifnot(!is.null(output$title))
   output
 }
 
@@ -80,8 +79,8 @@ get_related_elections <- function(meae_id){
     name_desc <- paste0(election_info$state, " US Congress ", election_info$year, " At Large")
     election <- list(id = rel_elect[[1]][1], name = name_desc)
     election_list <- election
-  }else {
-  for(i in 1:nrow(rel_elect)){
+  } else {
+  for (i in 1:nrow(rel_elect)) {
     election_info <- meae_elections[meae_elections$election_id == rel_elect[[1]][i], ]
     name_desc <- paste0(election_info$state, " US Congress ", election_info$year,
                         " District ", election_info$district)
@@ -120,10 +119,10 @@ get_related_maps <- function(meae_id){
 previous_map <- function(mapping_id, congress_num){
   # stopifnot(!is.null(meae_id) & !is.null(congress_num))
 
-  if(congress_num >= 2){
-    if(congress_num <= 9){
+  if (congress_num >= 2) {
+    if (congress_num <= 9) {
       previous_congress <- paste0("0", as.character(congress_num - 1))
-    }else {
+    } else {
       previous_congress <- as.character(congress_num - 1)
     }
 
@@ -139,7 +138,7 @@ previous_map <- function(mapping_id, congress_num){
   previous_info <- list(id = previous_id, name = previous_name, type = previous_type)
 
   stopifnot(!is.null(previous_info$id) & !is.null(previous_info$name) & !is.null(previous_info$type))
-  }else {
+  } else {
     previous_info <- ""
   }
   previous_info
@@ -148,10 +147,10 @@ previous_map <- function(mapping_id, congress_num){
 next_map <- function(mapping_id, congress_num){
   # stopifnot(!is.null(meae_id) & !is.null(congress_num))
 
-  if(congress_num <= 18){
-    if(congress_num <= 9){
+  if (congress_num <= 18) {
+    if (congress_num <= 9) {
       next_congress <- paste0("0", as.character(congress_num + 1))
-    }else {
+    } else {
       next_congress <- as.character(congress_num + 1)
     }
 
@@ -167,7 +166,7 @@ next_map <- function(mapping_id, congress_num){
   next_info <- list(id = next_id, name = next_name, type = next_type)
 
   stopifnot(!is.null(next_info$id) & !is.null(next_info$name) & !is.null(next_info$type))
-  }else {
+  } else {
     next_info <- ""
   }
   next_info
@@ -190,5 +189,5 @@ national_map <- function(mapping_id, congress_num){
 proper_case <- function(x){
   s <- strsplit(x, " ")[[1]]
   paste(toupper(substring(s, 1,1)), substring(s, 2),
-        sep="", collapse=" ")
+        sep = "", collapse=" ")
 }
