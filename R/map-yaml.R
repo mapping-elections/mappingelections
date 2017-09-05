@@ -54,12 +54,13 @@ get_general_info <- function(meae_id){
 get_title_caption <- function(basic_info){
   stopifnot(!is.null(basic_info))
 
-  ordinal <- as.character(congress_numbering[congress_numbering$number == basic_info$congressnum, 2])
+  # ordinal <- as.character(congress_numbering[congress_numbering$number == basic_info$congressnum, 2])
+  ordinal <- as.character(congress_numbering[congress_numbering$number == basic_info$congressnum, "ordinal_abbr"])
   elect_year <- meae_maps_to_elections[meae_maps_to_elections$meae_id == basic_info$`meae-id`, 2]
   election_year <- as.character(meae_elections[meae_elections$election_id == as.character(elect_year[[1]][1]), 6])
 
-  map_title <- paste0("Elections for the ", proper_case(ordinal), " Congress in ",
-                     proper_case(basic_info$state), ", ", election_year)
+  map_title <- paste0(proper_case(ordinal), " Congress: ",
+                     proper_case(basic_info$state), " ", election_year)
   caption <- "This is the brief description of the contents of the map."
   output <- list(title = map_title, caption = caption)
 
