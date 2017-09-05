@@ -30,6 +30,3 @@ cat(results_to_table(candidate_aggregates))
 ```
 
 </div>
-
-## About this election
-
