@@ -128,8 +128,9 @@ map_elections <- function(data, projection = NULL, legend = FALSE,
   }
 
   if (cities > 0) {
-    decade <- trunc(as.integer(format(data$map_date, "%Y")) / 10) * 10
+    decade <- round(as.integer(format(data$map_date, "%Y")) / 10) * 10
     decade <- unique(stats::na.omit(decade))
+    if (decade < 1790L) decade <- 1790L
     city_locations <- USAboundaries::us_cities(map_date = decade) %>%
       dplyr::filter(state %in% state_to_filter,
                     population > 100) %>%
