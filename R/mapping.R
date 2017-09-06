@@ -68,7 +68,7 @@ map_elections <- function(data, projection = NULL, legend = FALSE,
                           options = leaflet::leafletOptions(
                             crs = projection,
                             zoomControl = FALSE, dragging = TRUE,
-                            minZoom = 8, maxZoom = 11
+                            minZoom = 7, maxZoom = 11
                             ))
 
   map <- map %>%
