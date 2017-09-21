@@ -40,7 +40,9 @@ generate_map_metadata <- function(meae_id, legend_type = "fed-vs-repub-percentag
 
 get_general_info <- function(meae_id){
   election_info <- meae_maps[meae_maps$meae_id == meae_id, ]
-  state_name <- tolower(as.character(state_codes[state_codes$state_abbr == election_info$state, 1]))
+  state_name <- tools::toTitleCase(as.character(
+    state_codes[state_codes$state_abbr == election_info$state, 1]
+    ))
   ordinal <- as.character(congress_numbering[congress_numbering$number == election_info$congress, "ordinal_abbr"])
 
   output <- list(`meae-id` = election_info$meae_id,
