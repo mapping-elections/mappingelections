@@ -16,7 +16,7 @@ results_to_table <- function(results) {
 
   formatted_df <- results %>%
     dplyr::mutate(percent_vote = stringr::str_c(round(percent_vote * 100, 0), "%")) %>%
-    dplyr::mutate(winner = ifelse(winner, "✔", "")) %>%
+    dplyr::mutate(winner = ifelse(winner, "\u2713", "")) %>%
     dplyr::mutate(party = ifelse(is.na(party), "", party)) %>%
     dplyr::select(District = district,
                   Candidate = candidate,

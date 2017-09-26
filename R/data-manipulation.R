@@ -148,55 +148,34 @@ aggregate_party_votes <- function(data, geography = c("county"),
 
 #' Join aggregated party data to spatial data
 #'
-#' @param data A data frame returned by \code{\link{aggregate_party_votes}}.
-#' @param geography The geography to aggregate by for mapping. For instance,
-#'   \code{"county"}.
+#' @param party_votes A data frame of vote percentages by party.
+#' @param elections A data frame containing metadata about the NNV elections
+#'   being mapped.
 #' @param resolution Use \code{"high"} or \code{"low"} resolution geographic
 #'   data.
-#' @param date Override the date for the geographies used in this map. Otherwise
-#'   the appropriate date will be guessed from the data passed in.
 #'
 #' @return A \code{sf} object with polygons for the appropriate geographies and
 #'   the data joined to them.
 #'
-#' @examples
-#' votes <- vote_counts("meae.congressional.congress05.ny.county")
-#' aggregates <- aggregate_party_votes(votes)
-#' join_to_spatial(aggregates, resolution = "low")
-#'
 #' @export
-join_to_spatial <- function(data, geography = c("county"),
-                            resolution = c("high", "low"),
-                            date = NULL) {
+join_to_spatial <- function(party_votes, elections, resolution = c("high", "low")) {
 
-  stopifnot(is.data.frame(data))
-  stopifnot(is.null(date) || is.character(date) || inherits(date, "Date"))
-  geography <- match.arg(geography)
+  stopifnot(is.data.frame(party_votes))
+  stopifnot(is.data.frame(elections))
   resolution <- match.arg(resolution)
 
-  states <- data %>%
-    dplyr::distinct(state) %>%
-    dplyr::filter(!is.na(state)) %>%
-    dplyr::left_join(USAboundaries::state_codes, by = c("state" = "state_abbr"))
+  geography <- unique(elections$geography)[1]
+  state <- unique(elections$state_map)[1]
+  year <- most_common_year(elections$year)
+  map_date <- as.Date(paste0(year, "-07-04"))
 
-  years <- unique(data$year)
-  if (length(years) > 1) {
-    warning("These elections happened over more than one year, from ",
-            range(data$year, na.rm = TRUE)[1], " to ",
-            range(data$year, na.rm = TRUE)[2], ". Using the year ",
-            most_common_year(data$year), ", which is the most common year.")
-  }
-  year <- most_common_year(data$year)
-
-  if (is.null(date)) { date <- as.Date(paste0(year, "-12-31")) }
-
-  spatial <- USAboundaries::us_counties(map_date = date,
+  spatial <- USAboundaries::us_counties(map_date = map_date,
                                         resolution = resolution,
-                                        states = states$state_name) %>%
-    sf::st_as_sf() %>%
+                                        states = state) %>%
+    # sf::st_as_sf() %>%
     dplyr::mutate(id = as.character(id))
 
-  dplyr::left_join(spatial, data, by = c("id" = "county_ahcb")) %>%
-    dplyr::mutate(map_date = date)
+  dplyr::left_join(spatial, party_votes, by = c("id" = "county_ahcb")) %>%
+    dplyr::mutate(map_date = map_date)
 
 }

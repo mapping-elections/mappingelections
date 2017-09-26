@@ -61,10 +61,10 @@ parse_nnv_xml <- function(file) {
     geography_name <- sub_unit %>% xml_attr("name")
 
     if (length(res) == 0) {
-      return(data_frame(geography_name = geography_name,
-                        geography_type = geography_type,
-                        candidate_num = candidate_num,
-                        votes = NA_integer_))
+      return(dplyr::data_frame(geography_name = geography_name,
+                               geography_type = geography_type,
+                               candidate_num = candidate_num,
+                               votes = NA_integer_))
     }
 
     candidate_num <- res %>% xml_attr("candidate_ref")
@@ -74,10 +74,10 @@ parse_nnv_xml <- function(file) {
   }
 
   if (length(sub_units) == 0 ) {
-    votes_by_unit <- data_frame(geography_name = NA_character_,
-                                geography_type = NA_character_,
-                                candidate_num = candidate_num,
-                                votes = NA_integer_)
+    votes_by_unit <- dplyr::data_frame(geography_name = NA_character_,
+                                       geography_type = NA_character_,
+                                       candidate_num = candidate_num,
+                                       votes = NA_integer_)
 
   } else {
     votes_by_unit <- sub_units %>% purrr::map_df(results_from_sub_units)

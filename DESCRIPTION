@@ -29,6 +29,8 @@ Imports:
     dplyr,
     knitr,
     leaflet,
+    purrr,
+    RColorBrewer,
     readr,
     sf,
     stringr,

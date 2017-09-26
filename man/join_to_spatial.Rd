@@ -4,20 +4,16 @@
 \alias{join_to_spatial}
 \title{Join aggregated party data to spatial data}
 \usage{
-join_to_spatial(data, geography = c("county"), resolution = c("high",
-  "low"), date = NULL)
+join_to_spatial(party_votes, elections, resolution = c("high", "low"))
 }
 \arguments{
-\item{data}{A data frame returned by \code{\link{aggregate_party_votes}}.}
+\item{party_votes}{A data frame of vote percentages by party.}
 
-\item{geography}{The geography to aggregate by for mapping. For instance,
-\code{"county"}.}
+\item{elections}{A data frame containing metadata about the NNV elections
+being mapped.}
 
 \item{resolution}{Use \code{"high"} or \code{"low"} resolution geographic
 data.}
-
-\item{date}{Override the date for the geographies used in this map. Otherwise
-the appropriate date will be guessed from the data passed in.}
 }
 \value{
 A \code{sf} object with polygons for the appropriate geographies and
@@ -25,10 +21,4 @@ A \code{sf} object with polygons for the appropriate geographies and
 }
 \description{
 Join aggregated party data to spatial data
-}
-\examples{
-votes <- vote_counts("meae.congressional.congress05.ny.county")
-aggregates <- aggregate_party_votes(votes)
-join_to_spatial(aggregates, resolution = "low")
-
 }

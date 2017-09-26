@@ -8,60 +8,44 @@
 #'   Web Mercator projection will be used. To use a custom projection, provide a
 #'   projection/CRS object returned by the \code{\link[leaflet]{leafletCRS}}
 #'   function in the \code{leaflet} package.
-#' @param legend Should a legend be displayed or not?
 #' @param congressional_boundaries Draw Congressional district boundaries in
 #'   addition to county boundaries?
-#' @param state_boundaries Draw state boundaries in addition to county
-#'   boundaries?
 #' @param cities Number of largest cities to draw. Pass \code{FALSE} to not draw
 #'   any cities.
-#' @param scale The type of scale to use for the choropleth map.
 #' @param width The width of the map in pixels or percentage. Passed on to
 #'   \code{\link[leaflet]{leaflet}}.
 #' @param height The height of the map in pixels or percentage. Passed on to
 #'   \code{\link[leaflet]{leaflet}}.
 #'
-#' @examples
-#' meae_id <- "meae.congressional.congress08.va.county"
-#' votes <- vote_counts(meae_id)
-#' aggregates <- aggregate_party_votes(votes)
-#' map_data <- join_to_spatial(aggregates)
-#' map_elections(map_data, legend = TRUE)
+#' @rdname map_elections
 #'
+#' @importFrom dplyr ends_with
 #' @export
-map_elections <- function(data, projection = NULL, legend = FALSE,
-                          congressional_boundaries = TRUE,
-                          state_boundaries = FALSE, cities = 8L,
-                          scale = federalist_vs_republican,
+map_counties <- function(data, projection = NULL,
+                          congressional_boundaries = TRUE, cities = 8L,
                           width = "100%", height = NULL) {
 
-  stopifnot(is.logical(legend),
-            is.logical(state_boundaries),
-            is.list(scale),
+  stopifnot(is.logical(congressional_boundaries),
             is.numeric(cities) || cities == FALSE)
 
-  data <- data %>%
-    dplyr::mutate(fed_diff = federalist_percentage - 0.5)
+  state_to_filter <- most_common_state(data$state)
+  statename_to_filter <- USAboundaries::state_codes %>%
+    dplyr::filter(state_abbr == state_to_filter) %>%
+    dplyr::pull(state_name)
 
-  state_to_filter <- unique(stats::na.omit(data$state))
-  statename_to_filter <- unique(stats::na.omit(data$state_terr))
-  congress_num <- unique(stats::na.omit(data$congress))
+  congress <- unique(stats::na.omit(data$congress))[1]
 
-  if (is.null(projection) && length(state_to_filter) == 1) {
+  if (is.null(projection)) {
     # Use the state plane projection
     projection <- leaflet::leafletCRS(crsClass = "L.Proj.CRS",
       code = paste("ESRI:", USAboundaries::state_plane(state_to_filter), sep = ""),
       proj4def = USAboundaries::state_plane(state_to_filter, type = "proj4"),
       resolutions = 1.5^(25:15))
-  } else if (is.null(projection) && length(state_to_filter) > 1) {
-    # Use web mercator because there is more than one state.
-      warning("More than one state in the data. Disregarding custom projection ",
-              "and using web Mercator.")
-      projection <- NULL
-  } else if (!is.null(projection)) {
-    # Use the user-provided projection
+  } else {
     stopifnot(inherits(projection, "leaflet_crs"))
   }
+
+  colors <- poli_chrome(dplyr::as_data_frame(data))
 
   # Instantiate the map with the data and the projection
   map <- leaflet::leaflet(data, width = width, height = height,
@@ -81,40 +65,40 @@ map_elections <- function(data, projection = NULL, legend = FALSE,
       weight = 2,
       dashArray = "5, 5",
       fillOpacity = 1,
-      fillColor = ~scale$palette(fed_diff),
-      popup = ~popup_maker(county = tools::toTitleCase(tolower(name)),
-                           federalist = federalist_vote,
-                           republican = republican_vote,
-                           other = other_vote,
-                           fed_percent = federalist_percentage,
-                           rep_percent = republican_percentage,
-                           oth_percent = other_percentage)
+      fillColor = colors
+      # popup = ~popup_maker(county = tools::toTitleCase(tolower(name)),
+      #                      federalist = federalist_vote,
+      #                      republican = republican_vote,
+      #                      other = other_vote,
+      #                      fed_percent = federalist_percentage,
+      #                      rep_percent = republican_percentage,
+      #                      oth_percent = other_percentage)
     )
 
-  if (state_boundaries) {
-    state_names <- USAboundaries::state_codes %>%
-      dplyr::filter(state_abbr %in% state_to_filter)
-    state_sf <- USAboundaries::us_states(map_date = unique(data$map_date),
-                                         resolution = "high",
-                                         states = state_names$state_name)
-    map <- map %>%
-      leaflet::addPolygons(
-        data = state_sf,
-        # layerId = "state",
-        stroke = TRUE,
-        smoothFactor = 1,
-        color = "#222",
-        opacity = 1,
-        weight = 3,
-        fill = NULL
-      )
-  }
+  # if (state_boundaries) {
+  #   state_names <- USAboundaries::state_codes %>%
+  #     dplyr::filter(state_abbr %in% state_to_filter)
+  #   state_sf <- USAboundaries::us_states(map_date = unique(data$map_date),
+  #                                        resolution = "high",
+  #                                        states = state_names$state_name)
+  #   map <- map %>%
+  #     leaflet::addPolygons(
+  #       data = state_sf,
+  #       # layerId = "state",
+  #       stroke = TRUE,
+  #       smoothFactor = 1,
+  #       color = "#222",
+  #       opacity = 1,
+  #       weight = 3,
+  #       fill = NULL
+  #     )
+  # }
 
   if (congressional_boundaries) {
     congress_sf <- histcongress %>%
       dplyr::filter(statename %in% statename_to_filter,
-             startcong <= congress_num,
-             congress_num <= endcong)
+             startcong <= congress,
+             congress <= endcong)
     map <- map %>%
       leaflet::addPolygons(
         data = congress_sf,
@@ -147,42 +131,34 @@ map_elections <- function(data, projection = NULL, legend = FALSE,
     }
   }
 
-  if (legend) {
-    map <- map %>%
-      leaflet::addLegend("bottomright",
-                         title = "Election results",
-                         colors = scale$colors,
-                         labels = scale$labels)
-  }
-
   map
-
 
 }
 
-#' @rdname map_elections
-#' @export
-federalist_vs_republican <- list(
-  palette = leaflet::colorBin(
-    "PRGn",
-    domain = c(-0.5, 0.5),
-    bins = c(-0.5, -0.375, -0.25, -0.125, -0.01, 0.01, 0.125, 0.25, 0.375, 0.5),
-    na.color = "#808080",
-    alpha = FALSE
-  ),
-  colors = RColorBrewer::brewer.pal(9, "PRGn"),
-  labels = c(
-    "Republicans (> 87.5%)",
-    "Republicans (> 75%)",
-    "Republicans (> 62.5%)",
-    "Republicans (> 51%)",
-    "Tied",
-    "Federalists (> 51%)",
-    "Federalists (> 62.5%)",
-    "Federalists (> 75%)",
-    "Federalists (> 87.5%)"
-  )
-)
+# Get the colors from the data
+poli_chrome <- function(df) {
+  # The data frame will contain the percentages for various groups.
+  df <- df %>%
+    dplyr::select(dplyr::ends_with("_percentage")) %>%
+    dplyr::mutate_all(replace_with_zero)
+
+  party <- colnames(df)[max.col(df)] %>% stringr::str_replace("_percentage", "")
+  percentage <- apply(df, 1, max)
+  pal_mapping <- c("federalist" = "Greens", "republican" = "Purples",
+                   "antifederalist" = "Oranges", "other" = "Reds")
+  pals <- pal_mapping[party]
+
+  pos <- cut(percentage, breaks = seq(0, 1, 0.2), labels = FALSE)
+  out <- purrr::map2_chr(pals, pos, get_color)
+  names(out) <- NULL
+  out
+}
+
+# Takes an RColorBrewer palette and the position in that palette
+get_color <- function(pal, i) {
+  if (is.na(i)) return("#C7C7C7") # return grey for missing values
+  RColorBrewer::brewer.pal(5, pal)[i]
+}
 
 popup_maker <- function(county, federalist, republican, other, fed_percent,
                         rep_percent, oth_percent) {
