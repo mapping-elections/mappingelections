@@ -20,6 +20,9 @@
 #' @rdname meae_data
 "meae_congress_counties_parties"
 
+#' @rdname meae_data
+"nnv_name_authorities"
+
 #' Historic Congressional district boundaries
 #'
 #' @format sf polygons object
