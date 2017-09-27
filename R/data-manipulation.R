@@ -167,6 +167,7 @@ join_to_spatial <- function(party_votes, elections, resolution = c("high", "low"
   geography <- unique(elections$geography)[1]
   state <- unique(elections$state_map)[1]
   year <- most_common_year(elections$year)
+  if (state == "MA" && year < 1820) state <- c("MA", "ME")
   map_date <- as.Date(paste0(year, "-07-04"))
 
   spatial <- USAboundaries::us_counties(map_date = map_date,
