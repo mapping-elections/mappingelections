@@ -50,7 +50,8 @@ results_to_table <- function(results) {
     dplyr::summarize(vote = sum(vote),
                      percent_vote = sum(percent_vote)) %>%
     dplyr::ungroup() %>%
-    dplyr::filter(percent_vote > keep_percentage)
+    dplyr::filter(percent_vote > keep_percentage) %>%
+    dplyr::arrange(district, desc(percent_vote))
 
   # Format the data frame for
   formatted_df <- results_abbr %>%
@@ -59,7 +60,6 @@ results_to_table <- function(results) {
                   party = ifelse(is.na(party), "", party),
                   vote = prettyNum(vote, big.mark = ","),
                   vote = ifelse(vote == "NA", "", vote)) %>%
-    dplyr::arrange(district, desc(winner), percent_vote) %>%
     dplyr::select(District = district,
                   Candidate = candidate,
                   Party = party,
