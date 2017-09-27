@@ -25,5 +25,6 @@ if (getRversion() >= "2.15.1") {
                            "federalist_vote", "geography_type", "<NA>",
                            "guarantee_colnames", "other_percentage",
                            "other_vote", "republican_percentage",
-                           "republican_vote", "state_name", "votes"))
+                           "republican_vote", "state_name", "votes",
+                           "meae_congress_candidate_totals"))
 }

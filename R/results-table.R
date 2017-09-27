@@ -1,34 +1,75 @@
-#' Create table of results for election
+#' Get a table of results by candidate and Congressional district
 #'
-#' @param results The results as returned by
-#'   \code{\link{aggregate_candidate_votes}}.
+#' @param map_id An ID from the \code{meae_maps} table.
 #' @examples
-#' meae_id <- "meae.congressional.congress08.md.county"
-#' votes <- vote_counts(meae_id)
-#' results <- aggregate_candidate_votes(votes)
-#' results_to_table(results)
+#' map_id <- "meae.congressional.congress01.ny.county"
+#' candidate_results(map_id)
+#' @rdname results-table
+#' @importFrom dplyr select
+#' @export
+candidate_results <- function(map_id) {
+
+  stopifnot(is.character(map_id),
+            length(map_id) == 1)
+
+  meae_maps %>%
+    dplyr::filter(meae_id == map_id) %>%
+    dplyr::left_join(meae_maps_to_elections, by = "meae_id") %>%
+    dplyr::left_join(meae_elections, by = "election_id",
+                     suffix = c("", "_candidates")) %>%
+    dplyr::left_join(select(meae_congress_candidate_totals, -meae_id, -district), # select should be unnecessary eventually
+              by = "election_id")
+
+}
+
+#' Format candidate results in an HTML table
+#'
+#' @param results A data frame of results from \code{candidate_results}.
+#'
 #' @importFrom xml2 xml_find_all xml_set_attrs xml_set_attr xml_integer
 #'   xml_find_first
 #' @export
+#' @examples
+#' map_id <- "meae.congressional.congress01.ny.county"
+#' results <- candidate_results(map_id)
+#' results_to_table(results)
+#' @rdname results-table
 results_to_table <- function(results) {
 
   stopifnot(is.data.frame(results))
 
-  formatted_df <- results %>%
-    dplyr::mutate(percent_vote = stringr::str_c(round(percent_vote * 100, 0), "%")) %>%
-    dplyr::mutate(winner = ifelse(winner, "\u2713", "")) %>%
-    dplyr::mutate(party = ifelse(is.na(party), "", party)) %>%
+  # Get just the contenders
+  keep_percentage <- 0.05
+  results_abbr <- results %>%
+    dplyr::select(election_id, district, candidate, party, vote, percent_vote,
+                  winner) %>%
+    dplyr::mutate(contender = percent_vote > keep_percentage) %>%
+    dplyr::mutate(candidate = ifelse(contender, candidate, "Other candidates"),
+                  party = ifelse(contender, party, "")) %>%
+    dplyr::group_by(election_id, district, candidate, party, winner) %>%
+    dplyr::summarize(vote = sum(vote),
+                     percent_vote = sum(percent_vote)) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(percent_vote > keep_percentage)
+
+  # Format the data frame for
+  formatted_df <- results_abbr %>%
+    dplyr::mutate(percent_vote = stringr::str_c(round(percent_vote * 100, 0), "%"),
+                  winner = ifelse(winner, "\u2713", ""),
+                  party = ifelse(is.na(party), "", party),
+                  vote = prettyNum(vote, big.mark = ","),
+                  vote = ifelse(vote == "NA", "", vote)) %>%
+    dplyr::arrange(district, desc(winner), percent_vote) %>%
     dplyr::select(District = district,
                   Candidate = candidate,
                   Party = party,
                   Vote = vote,
                   Percentage = percent_vote,
-                  Elected = winner
-                  )
+                  Elected = winner)
+
   results_kable <- knitr::kable(formatted_df,
                format = "html",
-               align = "cllrrc",
-               format.args = list(big.mark = ","))
+               align = "cllrrc")
 
   results_xml <- xml2::read_html(as.character(results_kable))
 
@@ -68,44 +109,4 @@ results_to_table <- function(results) {
     xml_find_first(".//table") %>%
     as.character()
 
-}
-
-#' Create data frame of results of election by state
-#'
-#' This creates a data frame of results for each Congressional district in a
-#' state.
-#'
-#' @param votes The votes data frame for the elections
-#' @param keep_percentage What percentage of the votes should a candidate have
-#'   gotten in order to be displayed in the data frame? In othe words, how much
-#'   of a contender did the person have to be?
-#' @examples
-#' meae_id <- "meae.congressional.congress08.ny.county"
-#' votes <- vote_counts(meae_id)
-#' aggregate_candidate_votes(votes)
-#' @importFrom dplyr summarize group_by arrange mutate filter ungroup select
-#' @export
-aggregate_candidate_votes <- function(votes, keep_percentage = 0.05) {
-  stopifnot(is.data.frame(votes))
-
-  votes %>%
-    group_by(candidate, candidate_id, election_id, party,
-                    congress, district) %>%
-    summarize(vote = sum(vote, na.rm = TRUE)) %>%
-    group_by(election_id) %>%
-    mutate(total_vote = sum(vote)) %>%
-    mutate(percent_vote = vote / total_vote) %>%
-    mutate(contender = percent_vote > keep_percentage) %>%
-    mutate(candidate = ifelse(contender, candidate, "Other candidates")) %>%
-    mutate(candidate_id = ifelse(contender, candidate_id, NA_character_)) %>%
-    mutate(party = ifelse(contender, party, NA_character_)) %>%
-    group_by(election_id, candidate, candidate_id, district, party) %>%
-    summarize(vote = sum(vote, na.rm = TRUE)) %>%
-    group_by(election_id) %>%
-    mutate(total_vote = sum(vote)) %>%
-    mutate(percent_vote = vote / total_vote) %>%
-    mutate(winner = vote == max(vote)) %>%
-    arrange(district, desc(vote)) %>%
-    filter(percent_vote > keep_percentage) %>%
-    ungroup()
 }
