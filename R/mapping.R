@@ -23,7 +23,7 @@
 #' @export
 map_counties <- function(data, projection = NULL,
                           congressional_boundaries = TRUE, cities = 8L,
-                          width = "100%", height = NULL) {
+                          width = "100%", height = "800px") {
 
   stopifnot(is.logical(congressional_boundaries),
             is.numeric(cities) || cities == FALSE)
