@@ -19,6 +19,10 @@
 #'
 #' @rdname map_elections
 #'
+#' @examples
+#' map_data <- get_county_map_data("meae.congressional.congress01.ny.county")
+#' map_counties(map_data)
+#'
 #' @importFrom dplyr ends_with
 #' @export
 map_counties <- function(data, projection = NULL,
@@ -65,7 +69,8 @@ map_counties <- function(data, projection = NULL,
       weight = 2,
       dashArray = "5, 5",
       fillOpacity = 1,
-      fillColor = colors
+      fillColor = colors,
+      popup = popup_maker(leaflet::getMapData(map))
       # popup = ~popup_maker(county = tools::toTitleCase(tolower(name)),
       #                      federalist = federalist_vote,
       #                      republican = republican_vote,
@@ -160,10 +165,35 @@ get_color <- function(pal, i) {
   RColorBrewer::brewer.pal(5, pal)[i]
 }
 
-popup_maker <- function(county, federalist, republican, other, fed_percent,
-                        rep_percent, oth_percent) {
-  paste0("<b>County: </b>", county, "<br>",
-         "<b>Federalist: </b>", federalist, " (", fed_percent * 100, "%)<br>",
-         "<b>Republican: </b>", republican, " (", rep_percent * 100, "%)<br>",
-         "<b>Other: </b>", other, " (", oth_percent * 100, "%)<br>")
+#' @importFrom stringr str_c
+popup_maker <- function(df) {
+  popups <- vector("character", nrow(df))
+  for (i in seq_len(nrow(df))) {
+    row <- df[i, ]
+    county <- str_c("<b>", tools::toTitleCase(tolower(row$name)), " County</b><br/>")
+    districts <- str_c("Congressional District: ", row$districts, "<br/>")
+    federalists <- votes_to_popup("Federalists", row$federalist_percentage,
+                                  row$federalist_vote)
+    antifeds <- votes_to_popup("Anti-Federalists", row$antifederalist_percentage,
+                               row$antifederalist_vote)
+    republicans <- votes_to_popup("Republicans", row$republican_percentage,
+                               row$republican_vote)
+    others <- votes_to_popup("Other parties", row$other_percentage,
+                               row$other_vote)
+    popup <- str_c(county, districts, federalists, antifeds, republicans,
+                   others, sep = "\n")
+    popups[i] <- popup
+  }
+  popups
+}
+
+#' @importFrom stringr str_c
+votes_to_popup <- function(party, percentage, vote) {
+  if (is.na(percentage)) return(NULL)
+  out <- str_c(party, ": ", round(percentage * 100, 1), "%")
+  if (!is.na(vote)) {
+    out <- str_c(out, " (", prettyNum(vote, big.mark = ","), " votes)")
+  }
+  out <- str_c(out, "<br/>")
+  out
 }
