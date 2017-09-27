@@ -179,3 +179,22 @@ join_to_spatial <- function(party_votes, elections, resolution = c("high", "low"
     dplyr::mutate(map_date = map_date)
 
 }
+
+#' Get the data to map party vote percentages by county
+#' @param map_id The ID of the map from \code{meae_maps}.
+#'
+#' @examples
+#' get_county_map_data("meae.congressional.congress01.ny.county")
+#' @export
+get_county_map_data <- function(map_id) {
+  stopifnot(is.character(map_id),
+            length(map_id) == 1)
+  meae_map <- meae_maps %>% dplyr::filter(meae_id == map_id)
+  elections <- meae_map %>%
+    dplyr::left_join(meae_maps_to_elections, by = "meae_id") %>%
+    dplyr::left_join(meae_elections, by = "election_id", suffix = c("_map", ""))
+  party_votes <- meae_map %>%
+    dplyr::left_join(meae_congress_counties_parties, by = "meae_id")
+  map_data <- join_to_spatial(party_votes, elections)
+  map_data
+}

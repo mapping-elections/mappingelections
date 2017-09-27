@@ -5,7 +5,7 @@
 \title{Map elections data}
 \usage{
 map_counties(data, projection = NULL, congressional_boundaries = TRUE,
-  cities = 8L, width = "100\%", height = "600px")
+  cities = 8L, width = "100\%", height = "800px")
 }
 \arguments{
 \item{data}{An \code{sf} object with elections data returned by
