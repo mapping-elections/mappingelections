@@ -1,7 +1,6 @@
 #' Generate the YAML for each Congressional election map
 #'
 #' @param meae_id A unique Mapping Early American Elections id.
-#' @param legend_type A description of the data visualization. Default set to fed-vs-reub-percentage.
 #' @param always_allow_html Default to TRUE.
 #' @param layout_type Type of html layout. Default set to maps-show.
 #'
@@ -10,8 +9,8 @@
 #' @examples
 #' generate_map_metadata(meae_id = "meae.congressional.congress05.ny.county")
 #' @export
-generate_map_metadata <- function(meae_id, legend_type = "fed-vs-repub-percentage",
-                              always_allow_html = TRUE, layout_type = "maps-show") {
+generate_map_metadata <- function(meae_id, always_allow_html = TRUE,
+                                  layout_type = "maps-show") {
 
   meae_id <- tolower(meae_id)
   stopifnot(meae_id %in% unique(meae_maps$meae_id))
@@ -21,7 +20,6 @@ generate_map_metadata <- function(meae_id, legend_type = "fed-vs-repub-percentag
   docs_output <- list(md_document = md_doc, html_document = html_doc)
   final_docs <- list(output = docs_output)
 
-  legend_type <- list(legend_type = legend_type)
   always_allow_html <- list(always_allow_html = always_allow_html)
   layout_type <- list(layout = layout_type)
 
@@ -32,7 +30,7 @@ generate_map_metadata <- function(meae_id, legend_type = "fed-vs-repub-percentag
   connected_maps <- get_related_maps(meae_id)
 
 
-  output <- c(basic_info, title, legend_type, related_elections, connected_maps,
+  output <- c(basic_info, title, related_elections, connected_maps,
                 final_docs, always_allow_html, layout_type)
   output
 }

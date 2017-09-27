@@ -4,13 +4,11 @@
 \alias{generate_map_metadata}
 \title{Generate the YAML for each Congressional election map}
 \usage{
-generate_map_metadata(meae_id, legend_type = "fed-vs-repub-percentage",
-  always_allow_html = TRUE, layout_type = "maps-show")
+generate_map_metadata(meae_id, always_allow_html = TRUE,
+  layout_type = "maps-show")
 }
 \arguments{
 \item{meae_id}{A unique Mapping Early American Elections id.}
-
-\item{legend_type}{A description of the data visualization. Default set to fed-vs-reub-percentage.}
 
 \item{always_allow_html}{Default to TRUE.}
 
