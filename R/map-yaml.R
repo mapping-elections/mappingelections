@@ -84,7 +84,7 @@ get_related_elections <- function(meae_id){
 
     name_desc <- paste0(election_info$state, " US Congress ", election_info$year, " At Large")
     election <- list(id = rel_elect[[1]][1], name = name_desc)
-    election_list <- election
+    election_list <- list(election)
   } else {
   for (i in 1:nrow(rel_elect)) {
     election_info <- meae_elections[meae_elections$election_id == rel_elect[[1]][i], ]
