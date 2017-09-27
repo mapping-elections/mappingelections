@@ -55,6 +55,21 @@ meae_congress_counties_parties <-
              checked_jfb = col_character()
            ))
 
+meae_congress_candidate_totals <-
+  read_csv("data-raw/elections-data/congressional-candidate-totals.csv",
+           col_types = cols(
+             meae_id = col_character(),
+             election_id = col_character(),
+             candidate = col_character(),
+             candidate_id = col_character(),
+             district = col_integer(),
+             party = col_character(),
+             vote = col_integer(),
+             total_vote = col_integer(),
+             percent_vote = col_double(),
+             winner = col_logical()
+           ))
+
 meae_maps_to_elections <- read_csv("data-raw/elections-data/maps-to-elections.csv",
                                    col_types = cols(
                                      meae_id = col_character(),
@@ -80,4 +95,5 @@ nnv_name_authorities <- read_csv("data-raw/elections-data/nnv-name-authorities.c
 devtools::use_data(meae_candidates, meae_congressional_counties, meae_elections,
                    meae_maps_to_elections, meae_maps,
                    meae_congress_counties_parties, nnv_name_authorities,
+                   meae_congress_candidate_totals,
                    overwrite = TRUE)

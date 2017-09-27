@@ -8,6 +8,7 @@
 \alias{meae_maps_to_elections}
 \alias{meae_maps}
 \alias{meae_congress_counties_parties}
+\alias{meae_congress_candidate_totals}
 \alias{nnv_name_authorities}
 \title{Elections data from Mapping Early American Elections}
 \format{Data frames}
@@ -23,6 +24,8 @@ meae_maps_to_elections
 meae_maps
 
 meae_congress_counties_parties
+
+meae_congress_candidate_totals
 
 nnv_name_authorities
 }
