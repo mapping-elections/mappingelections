@@ -24,6 +24,9 @@
 "meae_congress_candidate_totals"
 
 #' @rdname meae_data
+"meae_congbio_elected"
+
+#' @rdname meae_data
 "nnv_name_authorities"
 
 #' Historic Congressional district boundaries
