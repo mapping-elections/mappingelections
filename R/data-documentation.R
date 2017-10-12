@@ -29,6 +29,9 @@
 #' @rdname meae_data
 "nnv_name_authorities"
 
+#' @rdname meae_data
+"meae_congress_candidate_totals_all"
+
 #' Historic Congressional district boundaries
 #'
 #' @format sf polygons object

@@ -74,6 +74,17 @@ meae_congress_candidate_totals <-
              winner = col_logical()
            ))
 
+meae_congress_candidate_totals_all <-
+  read_csv("data-raw/elections-data/congressional-candidate-totals-all.csv",
+           col_types = cols(
+             election_id = col_character(),
+             candidate_id = col_character(),
+             candidate_name = col_character(),
+             affiliation_id = col_character(),
+             affiliation_party = col_character(),
+             overview = col_integer()
+           ))
+
 meae_maps_to_elections <- read_csv("data-raw/elections-data/maps-to-elections.csv",
                                    col_types = cols(
                                      meae_id = col_character(),
@@ -110,5 +121,7 @@ meae_congbio_elected <- read_csv("data-raw/elections-data/congbio_elected.csv",
 devtools::use_data(meae_candidates, meae_congressional_counties, meae_elections,
                    meae_maps_to_elections, meae_maps,
                    meae_congress_counties_parties, nnv_name_authorities,
-                   meae_congress_candidate_totals, meae_congbio_elected,
+                   meae_congress_candidate_totals,
+                   meae_congress_candidate_totals_all,
+                   meae_congbio_elected,
                    overwrite = TRUE)
