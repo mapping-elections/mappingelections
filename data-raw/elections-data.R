@@ -54,7 +54,6 @@ meae_congress_counties_parties <-
              republican_percentage = col_double(),
              other_vote = col_integer(),
              other_percentage = col_double(),
-             county_vote = col_integer(),
              county_source = col_character(),
              checked_lam = col_logical(),
              checked_jfb = col_character()

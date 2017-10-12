@@ -22,7 +22,7 @@ Format candidate results in an HTML table
 \examples{
 map_id <- "meae.congressional.congress01.ny.county"
 candidate_results(map_id)
-map_id <- "meae.congressional.congress01.ny.county"
+map_id <- "meae.congressional.congress01.pa.county"
 results <- candidate_results(map_id)
 results_to_table(results)
 }
