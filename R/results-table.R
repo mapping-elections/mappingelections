@@ -30,7 +30,7 @@ candidate_results <- function(map_id) {
 #'   xml_find_first
 #' @export
 #' @examples
-#' map_id <- "meae.congressional.congress01.ny.county"
+#' map_id <- "meae.congressional.congress01.pa.county"
 #' results <- candidate_results(map_id)
 #' results_to_table(results)
 #' @rdname results-table
@@ -41,21 +41,23 @@ results_to_table <- function(results) {
   # Get just the contenders
   keep_percentage <- 0.05
   results_abbr <- results %>%
+    dplyr::left_join(meae_candidates, by = "candidate_id") %>%
     dplyr::select(election_id, district, candidate, party, vote, percent_vote,
-                  winner) %>%
+                  winner, congbio_url) %>%
     dplyr::mutate(contender = percent_vote > keep_percentage) %>%
     dplyr::mutate(candidate = ifelse(contender, candidate, "Other candidates"),
                   party = ifelse(contender, party, "")) %>%
-    dplyr::group_by(election_id, district, candidate, party, winner) %>%
+    dplyr::group_by(election_id, district, candidate, party, winner, congbio_url) %>%
     dplyr::summarize(vote = sum(vote),
                      percent_vote = sum(percent_vote)) %>%
     dplyr::ungroup() %>%
     dplyr::filter(percent_vote > keep_percentage) %>%
     dplyr::arrange(district, desc(percent_vote))
 
-  # Format the data frame for
+  # Format the data frame for display
   formatted_df <- results_abbr %>%
-    dplyr::mutate(percent_vote = stringr::str_c(round(percent_vote * 100, 0), "%"),
+    dplyr::mutate(candidate = link_to_congbio(candidate, congbio_url),
+                  percent_vote = stringr::str_c(round(percent_vote * 100, 0), "%"),
                   winner = ifelse(winner, "\u2713", ""),
                   party = ifelse(is.na(party), "", party),
                   vote = prettyNum(vote, big.mark = ","),
@@ -69,7 +71,7 @@ results_to_table <- function(results) {
 
   results_kable <- knitr::kable(formatted_df,
                format = "html",
-               align = "cllrrc")
+               align = "cllrrc", escape = FALSE)
 
   results_xml <- xml2::read_html(as.character(results_kable))
 

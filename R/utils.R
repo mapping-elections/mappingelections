@@ -28,3 +28,9 @@ most_common_state <- function(years) {
 }
 
 replace_with_zero <- function(x) { ifelse(is.na(x), 0, x) }
+
+link_to_congbio <- function(text, url) {
+  out <- paste0("<a href='", url, "'>", text, "</a>")
+  out[is.na(url)] <- text[is.na(url)]
+  out
+}
