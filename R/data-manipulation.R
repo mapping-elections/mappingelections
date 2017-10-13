@@ -165,14 +165,15 @@ join_to_spatial <- function(party_votes, elections, resolution = c("high", "low"
   resolution <- match.arg(resolution)
 
   geography <- unique(elections$geography)[1]
-  state <- unique(elections$state_map)[1]
+  state <- data_frame(state_abbr = unique(elections$state_map)) %>%
+    left_join(USAboundaries::state_codes, by = "state_abbr")
   year <- most_common_year(elections$year)
   if (state == "MA" && year < 1820) state <- c("MA", "ME")
-  map_date <- as.Date(paste0(year, "-07-04"))
+  map_date <- as.Date(paste0(year, "-01-01"))
 
   spatial <- USAboundaries::us_counties(map_date = map_date,
                                         resolution = resolution,
-                                        states = state) %>%
+                                        states = state$state_name) %>%
     # sf::st_as_sf() %>%
     dplyr::mutate(id = as.character(id))
 
@@ -185,7 +186,7 @@ join_to_spatial <- function(party_votes, elections, resolution = c("high", "low"
 #' @param map_id The ID of the map from \code{meae_maps}.
 #'
 #' @examples
-#' get_county_map_data("meae.congressional.congress01.ny.county")
+#' get_county_map_data("meae.congressional.congress01.nc.county")
 #' @export
 get_county_map_data <- function(map_id) {
   stopifnot(is.character(map_id),
