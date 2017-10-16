@@ -32,7 +32,7 @@ candidate_results <- function(map_id) {
 #'   xml_find_first
 #' @export
 #' @examples
-#' map_id <- "meae.congressional.congress01.pa.county"
+#' map_id <- "meae.congressional.congress01.nc.county"
 #' results <- candidate_results(map_id)
 #' results_to_table(results)
 #' @rdname results-table
@@ -40,19 +40,20 @@ results_to_table <- function(results, keep_percentage = 0.05) {
 
   stopifnot(is.data.frame(results))
 
-  # Get just the contenders
+  # Get just the contenders. Keep the ones above a certain percentage, but
+  # also keep the winners, who sometimes have no votes available.
   results_abbr <- results %>%
     dplyr::left_join(meae_candidates, by = "candidate_id") %>%
     dplyr::select(election_id, district, candidate, party, vote, percent_vote,
                   winner, congbio_url) %>%
-    dplyr::mutate(contender = percent_vote > keep_percentage) %>%
+    dplyr::mutate(contender = (percent_vote > keep_percentage) | winner) %>%
     dplyr::mutate(candidate = ifelse(contender, candidate, "Other candidates"),
                   party = ifelse(contender, party, "")) %>%
     dplyr::group_by(election_id, district, candidate, party, winner, congbio_url) %>%
     dplyr::summarize(vote = sum(vote),
                      percent_vote = sum(percent_vote)) %>%
     dplyr::ungroup() %>%
-    dplyr::filter(percent_vote > keep_percentage) %>%
+    dplyr::filter((percent_vote > keep_percentage) | winner) %>%
     dplyr::arrange(district, desc(percent_vote))
 
   # Format the data frame for display
@@ -62,7 +63,8 @@ results_to_table <- function(results, keep_percentage = 0.05) {
                   winner = ifelse(winner, "\u2713", ""),
                   party = ifelse(is.na(party), "", party),
                   vote = prettyNum(vote, big.mark = ","),
-                  vote = ifelse(vote == "NA", "", vote)) %>%
+                  vote = ifelse(vote == "NA", "", vote),
+                  percent_vote = ifelse(is.na(percent_vote), "", percent_vote)) %>%
     dplyr::select(District = district,
                   Candidate = candidate,
                   Party = party,
