@@ -153,7 +153,7 @@ poli_chrome <- function(df) {
   party <- colnames(df)[max.col(df)] %>% stringr::str_replace("_percentage", "")
   percentage <- apply(df, 1, max)
   pal_mapping <- c("federalist" = "Greens", "republican" = "Purples",
-                   "antifederalist" = "Oranges", "other" = "Reds")
+                   "antifederalist" = "Oranges", "other" = "Blues")
   pals <- pal_mapping[party]
 
   pos <- cut(percentage, breaks = seq(0, 1, 0.2), labels = FALSE)
