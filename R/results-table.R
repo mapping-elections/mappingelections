@@ -17,7 +17,8 @@ candidate_results <- function(map_id) {
     dplyr::left_join(meae_maps_to_elections, by = "meae_id") %>%
     dplyr::left_join(meae_elections, by = "election_id",
                      suffix = c("", "_candidates")) %>%
-    dplyr::left_join(select(meae_congress_candidate_totals, -meae_id, -district), # select should be unnecessary eventually
+    select(-district) %>%
+    dplyr::left_join(select(meae_congress_candidate_totals, -meae_id), # select should be unnecessary eventually
               by = "election_id")
 
 }
@@ -25,6 +26,7 @@ candidate_results <- function(map_id) {
 #' Format candidate results in an HTML table
 #'
 #' @param results A data frame of results from \code{candidate_results}.
+#' @param keep_percentage What percentage of votes defines a contender?
 #'
 #' @importFrom xml2 xml_find_all xml_set_attrs xml_set_attr xml_integer
 #'   xml_find_first
@@ -34,12 +36,11 @@ candidate_results <- function(map_id) {
 #' results <- candidate_results(map_id)
 #' results_to_table(results)
 #' @rdname results-table
-results_to_table <- function(results) {
+results_to_table <- function(results, keep_percentage = 0.05) {
 
   stopifnot(is.data.frame(results))
 
   # Get just the contenders
-  keep_percentage <- 0.05
   results_abbr <- results %>%
     dplyr::left_join(meae_candidates, by = "candidate_id") %>%
     dplyr::select(election_id, district, candidate, party, vote, percent_vote,
@@ -96,16 +97,20 @@ results_to_table <- function(results) {
   # Does the district number change?
   district_num <- results_xml %>%
     xml_find_all(".//tr/td[1]") %>%
-    xml_integer()
-  district_changed = dplyr::lead(district_num, default = max(district_num) + 1) - district_num > 0
-  xml_find_all(results_xml, ".//tbody/tr")[district_changed] %>%
-    xml_set_attr("class", "district-changed")
-  xml_find_all(results_xml, ".//tbody/tr")[!district_changed] %>%
-    xml_set_attr("class", "district-unchanged")
-  xml_find_all(results_xml, ".//tbody/tr")[district_num %% 2 == 0] %>%
-    xml_set_attr("data-district-type", "even")
-  xml_find_all(results_xml, ".//tbody/tr")[district_num %% 2 != 0] %>%
-    xml_set_attr("data-district-type", "odd")
+    xml_text()
+
+  if (!all(stringr::str_detect(district_num, "At-large"))) {
+    district_num <- as.integer(district_num)
+    district_changed = dplyr::lead(district_num, default = max(district_num) + 1) - district_num > 0
+    xml_find_all(results_xml, ".//tbody/tr")[district_changed] %>%
+      xml_set_attr("class", "district-changed")
+    xml_find_all(results_xml, ".//tbody/tr")[!district_changed] %>%
+      xml_set_attr("class", "district-unchanged")
+    xml_find_all(results_xml, ".//tbody/tr")[district_num %% 2 == 0] %>%
+      xml_set_attr("data-district-type", "even")
+    xml_find_all(results_xml, ".//tbody/tr")[district_num %% 2 != 0] %>%
+      xml_set_attr("data-district-type", "odd")
+  }
 
   results_xml %>%
     xml_find_first(".//table") %>%

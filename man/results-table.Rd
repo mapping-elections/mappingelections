@@ -7,12 +7,14 @@
 \usage{
 candidate_results(map_id)
 
-results_to_table(results)
+results_to_table(results, keep_percentage = 0.05)
 }
 \arguments{
 \item{map_id}{An ID from the \code{meae_maps} table.}
 
 \item{results}{A data frame of results from \code{candidate_results}.}
+
+\item{keep_percentage}{What percentage of votes defines a contender?}
 }
 \description{
 Get a table of results by candidate and Congressional district

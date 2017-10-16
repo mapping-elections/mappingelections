@@ -165,15 +165,18 @@ join_to_spatial <- function(party_votes, elections, resolution = c("high", "low"
   resolution <- match.arg(resolution)
 
   geography <- unique(elections$geography)[1]
-  state <- data_frame(state_abbr = unique(elections$state_map)) %>%
-    left_join(USAboundaries::state_codes, by = "state_abbr")
+  state <- dplyr::data_frame(state_abbr = unique(elections$state_map)) %>%
+    dplyr::left_join(USAboundaries::state_codes, by = "state_abbr")
   year <- most_common_year(elections$year)
-  if (state == "MA" && year < 1820) state <- c("MA", "ME")
+  state_to_filter <- state$state_name
+  if (state_to_filter == "Massachusetts" && year < 1820) {
+    state_to_filter <- c("Massachusetts", "Maine")
+  }
   map_date <- as.Date(paste0(year, "-01-01"))
 
   spatial <- USAboundaries::us_counties(map_date = map_date,
                                         resolution = resolution,
-                                        states = state$state_name) %>%
+                                        states = state_to_filter) %>%
     # sf::st_as_sf() %>%
     dplyr::mutate(id = as.character(id))
 

@@ -16,18 +16,19 @@
 #'   \code{\link[leaflet]{leaflet}}.
 #' @param height The height of the map in pixels or percentage. Passed on to
 #'   \code{\link[leaflet]{leaflet}}.
+#' @param debug Should debugging information be displayed?
 #'
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress01.ny.county")
+#' map_data <- get_county_map_data("meae.congressional.congress01.ga.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
 #' @export
 map_counties <- function(data, projection = NULL,
-                          congressional_boundaries = TRUE, cities = 8L,
-                          width = "100%", height = "800px") {
+                          congressional_boundaries = TRUE, cities = 4L,
+                          width = "100%", height = "800px", debug = FALSE) {
 
   stopifnot(is.logical(congressional_boundaries),
             is.numeric(cities) || cities == FALSE)
@@ -70,6 +71,7 @@ map_counties <- function(data, projection = NULL,
       dashArray = "5, 5",
       fillOpacity = 1,
       fillColor = colors,
+      label = if (debug) { ~id } else { NULL },
       popup = popup_maker(leaflet::getMapData(map))
       # popup = ~popup_maker(county = tools::toTitleCase(tolower(name)),
       #                      federalist = federalist_vote,
@@ -103,7 +105,8 @@ map_counties <- function(data, projection = NULL,
     congress_sf <- histcongress %>%
       dplyr::filter(statename %in% statename_to_filter,
              startcong <= congress,
-             congress <= endcong)
+             congress <= endcong,
+             district != -1)
     map <- map %>%
       leaflet::addPolygons(
         data = congress_sf,
@@ -180,8 +183,13 @@ popup_maker <- function(df) {
                                row$republican_vote)
     others <- votes_to_popup("Other parties", row$other_percentage,
                                row$other_vote)
+    if (!is.na(row$county_source) && row$county_source == "district") {
+      disclaimer <- "<br/><span class='county-disclaimer'>County-level returns are not available for this county, so party percentages for the district as a whole have been display.</span>"
+    } else {
+      disclaimer <- NULL
+    }
     popup <- str_c(county, districts, federalists, antifeds, republicans,
-                   others, sep = "\n")
+                   others, disclaimer, sep = "\n")
     popups[i] <- popup
   }
   popups
