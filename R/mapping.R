@@ -184,7 +184,7 @@ popup_maker <- function(df) {
     others <- votes_to_popup("Other parties", row$other_percentage,
                                row$other_vote)
     if (!is.na(row$county_source) && row$county_source == "district") {
-      disclaimer <- "<br/><span class='county-disclaimer'>County-level returns are not available for this county, so party percentages for the district as a whole have been display.</span>"
+      disclaimer <- "<br/><span class='county-disclaimer'>County-level returns are not available for this county, so party percentages for the district as a whole have been displayed.</span>"
     } else {
       disclaimer <- NULL
     }
