@@ -60,7 +60,7 @@ results_to_table <- function(results, keep_percentage = 0.05) {
   # Format the data frame for display
   formatted_df <- results_abbr %>%
     dplyr::mutate(candidate = link_to_congbio(candidate, congbio_url),
-                  percent_vote = stringr::str_c(round(percent_vote * 100, 0), "%"),
+                  percent_vote = stringr::str_c(round(percent_vote * 100, 1), "%"),
                   winner = ifelse(winner, "\u2713", ""),
                   party = ifelse(is.na(party), "", party),
                   vote = prettyNum(vote, big.mark = ","),
