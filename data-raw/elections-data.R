@@ -66,12 +66,13 @@ meae_congress_candidate_totals <-
              election_id = col_character(),
              candidate = col_character(),
              candidate_id = col_character(),
-             district = col_integer(),
+             district = col_character(),
              party = col_character(),
              vote = col_integer(),
              total_vote = col_integer(),
              percent_vote = col_double(),
-             winner = col_logical()
+             winner = col_logical(),
+             unopposed = col_logical()
            ))
 
 meae_congress_candidate_totals_all <-
