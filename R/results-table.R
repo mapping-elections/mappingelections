@@ -32,7 +32,7 @@ candidate_results <- function(map_id) {
 #'   xml_find_first
 #' @export
 #' @examples
-#' map_id <- "meae.congressional.congress01.nc.county"
+#' map_id <- "meae.congressional.congress01.va.county"
 #' results <- candidate_results(map_id)
 #' results_to_table(results)
 #' @rdname results-table
@@ -43,6 +43,7 @@ results_to_table <- function(results, keep_percentage = 0.05) {
   # Get just the contenders. Keep the ones above a certain percentage, but
   # also keep the winners, who sometimes have no votes available.
   results_abbr <- results %>%
+    mutate(district = coerce_if(district)) %>%
     dplyr::left_join(meae_candidates, by = "candidate_id") %>%
     dplyr::select(election_id, district, candidate, party, vote, percent_vote,
                   winner, congbio_url, unopposed) %>%

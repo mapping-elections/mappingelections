@@ -34,3 +34,12 @@ link_to_congbio <- function(text, url) {
   out[is.na(url)] <- text[is.na(url)]
   out
 }
+
+coerce_if <- function(x) {
+  out <- suppressWarnings(as.integer(x))
+  if (any(is.na(out))) {
+    return(x)
+  } else {
+    return(out)
+  }
+}
