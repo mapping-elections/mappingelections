@@ -64,10 +64,9 @@ results_to_table <- function(results, keep_percentage = 0.05) {
                   winner = ifelse(winner, "\u2713", ""),
                   party = ifelse(is.na(party), "", party),
                   vote = prettyNum(vote, big.mark = ","),
-                  percent_vote = ifelse(vote == "NA" & unopposed,
-                                        "unopp.", percent_vote),
                   vote = ifelse(vote == "NA", "", vote),
-                  percent_vote = ifelse(is.na(percent_vote), "", percent_vote)) %>%
+                  percent_vote = ifelse(is.na(percent_vote), "", percent_vote),
+                  percent_vote = ifelse(unopposed, "unopp.", percent_vote)) %>%
     dplyr::select(District = district,
                   Candidate = candidate,
                   Party = party,
