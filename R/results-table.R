@@ -45,13 +45,14 @@ results_to_table <- function(results, keep_percentage = 0.05) {
   results_abbr <- results %>%
     dplyr::left_join(meae_candidates, by = "candidate_id") %>%
     dplyr::select(election_id, district, candidate, party, vote, percent_vote,
-                  winner, congbio_url) %>%
+                  winner, congbio_url, unopposed) %>%
     dplyr::mutate(contender = (percent_vote > keep_percentage) | winner) %>%
     dplyr::mutate(candidate = ifelse(contender, candidate, "Other candidates"),
                   party = ifelse(contender, party, "")) %>%
     dplyr::group_by(election_id, district, candidate, party, winner, congbio_url) %>%
     dplyr::summarize(vote = sum(vote),
-                     percent_vote = sum(percent_vote)) %>%
+                     percent_vote = sum(percent_vote),
+                     unopposed = all(unopposed)) %>%
     dplyr::ungroup() %>%
     dplyr::filter((percent_vote > keep_percentage) | winner) %>%
     dplyr::arrange(district, desc(percent_vote))
@@ -63,6 +64,8 @@ results_to_table <- function(results, keep_percentage = 0.05) {
                   winner = ifelse(winner, "\u2713", ""),
                   party = ifelse(is.na(party), "", party),
                   vote = prettyNum(vote, big.mark = ","),
+                  percent_vote = ifelse(vote == "NA" & unopposed,
+                                        "unopp.", percent_vote),
                   vote = ifelse(vote == "NA", "", vote),
                   percent_vote = ifelse(is.na(percent_vote), "", percent_vote)) %>%
     dplyr::select(District = district,
