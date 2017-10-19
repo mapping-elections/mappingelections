@@ -153,7 +153,8 @@ poli_chrome <- function(df) {
   party <- colnames(df)[max.col(df)] %>% stringr::str_replace("_percentage", "")
   percentage <- apply(df, 1, max)
   pal_mapping <- c("federalist" = "Greens", "republican" = "Purples",
-                   "antifederalist" = "Oranges", "other" = "Blues")
+                   "antifederalist" = "Oranges", "other" = "Blues",
+                   "potomac" = "Blues", "chesapeake" = "Reds")
   pals <- pal_mapping[party]
 
   pos <- cut(percentage, breaks = seq(0, 1, 0.2), labels = FALSE)
@@ -181,7 +182,11 @@ popup_maker <- function(df) {
                                row$antifederalist_vote)
     republicans <- votes_to_popup("Republicans", row$republican_percentage,
                                row$republican_vote)
-    others <- votes_to_popup("Other parties", row$other_percentage,
+    chesapeake <- votes_to_popup("Chesapeake", row$chesapeake_percentage,
+                               row$chesapeake_vote)
+    potomac <- votes_to_popup("Potomac", row$potomac_percentage,
+                               row$potomac_vote)
+    others <- votes_to_popup("Unaffiliated or other parties", row$other_percentage,
                                row$other_vote)
     if (!is.na(row$county_source) && row$county_source == "district") {
       disclaimer <- "<br/><span class='county-disclaimer'>County-level returns are not available for this county, so party percentages for the district as a whole have been displayed.</span>"
@@ -189,7 +194,7 @@ popup_maker <- function(df) {
       disclaimer <- NULL
     }
     popup <- str_c(county, districts, federalists, antifeds, republicans,
-                   others, disclaimer, sep = "\n")
+                   chesapeake, potomac, others, disclaimer, sep = "\n")
     popups[i] <- popup
   }
   popups

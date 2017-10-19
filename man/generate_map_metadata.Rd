@@ -4,8 +4,8 @@
 \alias{generate_map_metadata}
 \title{Generate the YAML for each Congressional election map}
 \usage{
-generate_map_metadata(meae_id, always_allow_html = TRUE,
-  layout_type = "maps-show")
+generate_map_metadata(meae_id, legend = "fed-vs-anti",
+  always_allow_html = TRUE, layout_type = "maps-show")
 }
 \arguments{
 \item{meae_id}{A unique Mapping Early American Elections id.}
