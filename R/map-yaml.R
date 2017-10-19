@@ -137,7 +137,7 @@ previous_map <- function(mapping_id, congress_num){
   previous_id <- paste0(mapping_id[[1]][1], ".", mapping_id[[1]][2], ".", "congress", previous_congress, ".",
                       mapping_id[[1]][4], ".", mapping_id[[1]][5])
 
-  stopifnot(previous_id %in% unique(meae_maps$meae_id))
+  # stopifnot(previous_id %in% unique(meae_maps$meae_id))
 
   previous_ordinal <- as.character(congress_numbering[congress_numbering$number == congress_num - 1, 3])
   previous_name <- paste(toupper(mapping_id[[1]][4]), proper_case(previous_ordinal), "Congress")
@@ -165,7 +165,7 @@ next_map <- function(mapping_id, congress_num){
   next_id <- paste0(mapping_id[[1]][1], ".", mapping_id[[1]][2], ".", "congress", next_congress, ".",
                     mapping_id[[1]][4], ".", mapping_id[[1]][5])
 
-  stopifnot(next_id %in% unique(meae_maps$meae_id))
+  # stopifnot(next_id %in% unique(meae_maps$meae_id))
 
   next_ordinal <- as.character(congress_numbering[congress_numbering$number == congress_num + 1, 3])
   next_name <- paste(toupper(mapping_id[[1]][4]), proper_case(next_ordinal), "Congress")
