@@ -9,7 +9,8 @@
 #' @examples
 #' generate_map_metadata(meae_id = "meae.congressional.congress05.ny.county")
 #' @export
-generate_map_metadata <- function(meae_id, always_allow_html = TRUE,
+generate_map_metadata <- function(meae_id, legend = "fed-vs-anti",
+                                  always_allow_html = TRUE,
                                   layout_type = "maps-show") {
 
   meae_id <- tolower(meae_id)
@@ -20,6 +21,7 @@ generate_map_metadata <- function(meae_id, always_allow_html = TRUE,
   docs_output <- list(md_document = md_doc, html_document = html_doc)
   final_docs <- list(output = docs_output)
 
+  legend <- list(legend = legend)
   always_allow_html <- list(always_allow_html = always_allow_html)
   layout_type <- list(layout = layout_type)
 
@@ -30,7 +32,7 @@ generate_map_metadata <- function(meae_id, always_allow_html = TRUE,
   connected_maps <- get_related_maps(meae_id)
 
 
-  output <- c(basic_info, title, related_elections, connected_maps,
+  output <- c(basic_info, title, legend, related_elections, connected_maps,
                 final_docs, always_allow_html, layout_type)
   output
 }
