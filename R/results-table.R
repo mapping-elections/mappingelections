@@ -56,7 +56,7 @@ results_to_table <- function(results, keep_percentage = 0.05) {
                      unopposed = all(unopposed)) %>%
     dplyr::ungroup() %>%
     dplyr::filter((percent_vote > keep_percentage) | winner) %>%
-    dplyr::arrange(district, desc(percent_vote))
+    dplyr::arrange(district, desc(vote), desc(percent_vote))
 
   # Format the data frame for display
   formatted_df <- results_abbr %>%
