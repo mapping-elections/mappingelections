@@ -52,11 +52,13 @@ meae_congress_counties_parties <-
              antifederalist_percentage = col_double(),
              republican_vote = col_integer(),
              republican_percentage = col_double(),
+             chesapeake_vote = col_integer(),
+             chesapeake_percentage = col_double(),
+             potomac_vote = col_integer(),
+             potomac_percentage = col_double(),
              other_vote = col_integer(),
              other_percentage = col_double(),
-             county_source = col_character(),
-             checked_lam = col_logical(),
-             checked_jfb = col_character()
+             county_source = col_character()
            ))
 
 meae_congress_candidate_totals <-
