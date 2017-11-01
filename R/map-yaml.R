@@ -117,7 +117,13 @@ get_related_maps <- function(meae_id){
   nex_map <- next_map(mapping_id, congress_num)
   nat_map <- national_map(mapping_id, congress_num)
 
-  maps_list <- c(list(prev_map), list(nex_map), list(nat_map))
+  if(congress_num==1){
+    maps_list <- c(list(nex_map), list(nat_map))
+  } else if(congress_num==19){
+    maps_list <- c(list(prev_map), list(nat_map))
+  } else {
+    maps_list <- c(list(prev_map), list(nex_map), list(nat_map))
+  }
 
   related_maps_list <- list(`related-maps` = maps_list)
 }
@@ -145,7 +151,7 @@ previous_map <- function(mapping_id, congress_num){
 
   stopifnot(!is.null(previous_info$id) & !is.null(previous_info$name) & !is.null(previous_info$type))
   } else {
-    previous_info <- ""
+    previous_info <- NA
   }
   previous_info
 }
@@ -173,7 +179,7 @@ next_map <- function(mapping_id, congress_num){
 
   stopifnot(!is.null(next_info$id) & !is.null(next_info$name) & !is.null(next_info$type))
   } else {
-    next_info <- ""
+    next_info <- NA
   }
   next_info
 }
