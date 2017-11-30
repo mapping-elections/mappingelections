@@ -2,6 +2,8 @@
 #'
 #' @param data An \code{sf} object with elections data returned by
 #'   \code{\link{join_to_spatial}}.
+#' @param congress The number of the Congress. If \code{NULL}, it will be
+#'   guessed from the data.
 #' @param projection If not provided, then the best state plane projection will
 #'   be guessed using the \code{\link[USAboundaries]{state_plane}} function from
 #'   the \code{USAboundaries} package. If \code{NULL}, then leaflet's default
@@ -26,7 +28,7 @@
 #'
 #' @importFrom dplyr ends_with
 #' @export
-map_counties <- function(data, projection = NULL,
+map_counties <- function(data, congress = NULL, projection = NULL,
                           congressional_boundaries = TRUE, cities = 4L,
                           width = "100%", height = "800px", debug = FALSE) {
 
@@ -38,7 +40,9 @@ map_counties <- function(data, projection = NULL,
     dplyr::filter(state_name == statename_to_filter) %>%
     dplyr::pull(state_abbr)
 
-  congress <- unique(stats::na.omit(data$congress))[1]
+  if (is.null(congress)) {
+    congress <- unique(stats::na.omit(data$congress))[1]
+  }
 
   if (is.null(projection)) {
     # Use the state plane projection
