@@ -23,7 +23,7 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress01.ma.county")
+#' map_data <- get_county_map_data("meae.congressional.congress01.ny.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
@@ -39,6 +39,8 @@ map_counties <- function(data, congress = NULL, projection = NULL,
   state_to_filter <- USAboundaries::state_codes %>%
     dplyr::filter(state_name == statename_to_filter) %>%
     dplyr::pull(state_abbr)
+
+  bbox <- sf::st_bbox(data)
 
   if (is.null(congress)) {
     congress <- unique(stats::na.omit(data$congress))[1]
@@ -63,6 +65,11 @@ map_counties <- function(data, congress = NULL, projection = NULL,
                             zoomControl = FALSE, dragging = TRUE,
                             minZoom = 7, maxZoom = 11
                             ))
+
+  # Set the maximum bounds of the map
+  map <- map %>%
+    leaflet::setMaxBounds(bbox[["xmin"]], bbox[["ymin"]],
+                          bbox[["xmax"]], bbox[["ymax"]])
 
   map <- map %>%
     leaflet::addPolygons(
