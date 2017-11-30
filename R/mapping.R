@@ -21,7 +21,7 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress01.ga.county")
+#' map_data <- get_county_map_data("meae.congressional.congress01.ct.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
@@ -33,10 +33,10 @@ map_counties <- function(data, projection = NULL,
   stopifnot(is.logical(congressional_boundaries),
             is.numeric(cities) || cities == FALSE)
 
-  state_to_filter <- most_common_state(data$state)
-  statename_to_filter <- USAboundaries::state_codes %>%
-    dplyr::filter(state_abbr == state_to_filter) %>%
-    dplyr::pull(state_name)
+  statename_to_filter <- most_common_state(data$state_terr)
+  state_to_filter <- USAboundaries::state_codes %>%
+    dplyr::filter(state_name == statename_to_filter) %>%
+    dplyr::pull(state_abbr)
 
   congress <- unique(stats::na.omit(data$congress))[1]
 
