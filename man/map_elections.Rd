@@ -6,7 +6,7 @@
 \usage{
 map_counties(data, congress = NULL, projection = NULL,
   congressional_boundaries = TRUE, cities = 4L, width = "100\%",
-  height = "800px", debug = FALSE)
+  height = "100\%")
 }
 \arguments{
 \item{data}{An \code{sf} object with elections data returned by
@@ -33,14 +33,12 @@ any cities.}
 
 \item{height}{The height of the map in pixels or percentage. Passed on to
 \code{\link[leaflet]{leaflet}}.}
-
-\item{debug}{Should debugging information be displayed?}
 }
 \description{
 Map elections data
 }
 \examples{
-map_data <- get_county_map_data("meae.congressional.congress01.ma.county")
-map_counties(map_data)
+map_data <- get_county_map_data("meae.congressional.congress04.ny.county")
+map_counties(map_data, height = NULL)
 
 }

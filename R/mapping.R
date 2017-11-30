@@ -18,19 +18,18 @@
 #'   \code{\link[leaflet]{leaflet}}.
 #' @param height The height of the map in pixels or percentage. Passed on to
 #'   \code{\link[leaflet]{leaflet}}.
-#' @param debug Should debugging information be displayed?
 #'
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress01.ma.county")
-#' map_counties(map_data)
+#' map_data <- get_county_map_data("meae.congressional.congress04.ny.county")
+#' map_counties(map_data, height = NULL)
 #'
 #' @importFrom dplyr ends_with
 #' @export
 map_counties <- function(data, congress = NULL, projection = NULL,
                           congressional_boundaries = TRUE, cities = 4L,
-                          width = "100%", height = "800px", debug = FALSE) {
+                          width = "100%", height = "100%") {
 
   stopifnot(is.logical(congressional_boundaries),
             is.numeric(cities) || cities == FALSE)
@@ -39,6 +38,8 @@ map_counties <- function(data, congress = NULL, projection = NULL,
   state_to_filter <- USAboundaries::state_codes %>%
     dplyr::filter(state_name == statename_to_filter) %>%
     dplyr::pull(state_abbr)
+
+  bbox <- sf::st_bbox(data)
 
   if (is.null(congress)) {
     congress <- unique(stats::na.omit(data$congress))[1]
@@ -64,6 +65,11 @@ map_counties <- function(data, congress = NULL, projection = NULL,
                             minZoom = 7, maxZoom = 11
                             ))
 
+  # Set the maximum bounds of the map
+  map <- map %>%
+    leaflet::setMaxBounds(bbox[["xmin"]], bbox[["ymin"]],
+                          bbox[["xmax"]], bbox[["ymax"]])
+
   map <- map %>%
     leaflet::addPolygons(
       # layerId = "county",
@@ -75,7 +81,7 @@ map_counties <- function(data, congress = NULL, projection = NULL,
       dashArray = "5, 5",
       fillOpacity = 1,
       fillColor = colors,
-      label = if (debug) { ~id } else { NULL },
+      label = label_maker(leaflet::getMapData(map)),
       popup = popup_maker(leaflet::getMapData(map))
       # popup = ~popup_maker(county = tools::toTitleCase(tolower(name)),
       #                      federalist = federalist_vote,
@@ -174,12 +180,27 @@ get_color <- function(pal, i) {
 }
 
 #' @importFrom stringr str_c
+label_maker <- function(df) {
+  labels <- vector("character", nrow(df))
+  for (i in seq_len(nrow(df))) {
+    row <- df[i, ]
+    county <- str_c(tools::toTitleCase(tolower(row$name)), " County")
+    district <- str_c("District ", row$district)
+    if (is.na(district)) district <- NULL
+    label <- str_c(district, county, sep = ", ")
+    labels[i] <- label
+  }
+  labels
+}
+
+#' @importFrom stringr str_c
 popup_maker <- function(df) {
   popups <- vector("character", nrow(df))
   for (i in seq_len(nrow(df))) {
     row <- df[i, ]
     county <- str_c("<b>", tools::toTitleCase(tolower(row$name)), " County</b><br/>")
     districts <- str_c("Congressional District: ", row$districts, "<br/>")
+    if (is.na(districts)) districts <- NULL
     federalists <- votes_to_popup("Federalists", row$federalist_percentage,
                                   row$federalist_vote)
     antifeds <- votes_to_popup("Anti-Federalists", row$antifederalist_percentage,
