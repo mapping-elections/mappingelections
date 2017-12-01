@@ -187,6 +187,7 @@ label_maker <- function(df) {
     county <- str_c(tools::toTitleCase(tolower(row$name)), " County")
     district <- str_c("District ", row$district)
     if (is.na(district)) district <- NULL
+    if (district == "District At-large") district <- "At-large district"
     label <- str_c(district, county, sep = ", ")
     labels[i] <- label
   }
