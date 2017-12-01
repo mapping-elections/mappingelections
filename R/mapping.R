@@ -22,7 +22,7 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress04.ny.county")
+#' map_data <- get_county_map_data("meae.congressional.congress05.tn.county")
 #' map_counties(map_data, height = NULL)
 #'
 #' @importFrom dplyr ends_with
@@ -185,10 +185,15 @@ label_maker <- function(df) {
   for (i in seq_len(nrow(df))) {
     row <- df[i, ]
     county <- str_c(tools::toTitleCase(tolower(row$name)), " County")
-    district <- str_c("District ", row$district)
-    if (is.na(district)) district <- NULL
-    if (district == "District At-large") district <- "At-large district"
-    label <- str_c(district, county, sep = ", ")
+    district_word <- ifelse(stringr::str_detect(row$district, ", "),
+                            "Districts", "District")
+    district <- str_c(district_word, " ", row$district)
+    if (is.na(district)) {
+      district <- NULL
+      } else if (district == "District At-large") {
+        district <- "At-large district"
+      }
+    label <- str_c(county, district, sep = " / ")
     labels[i] <- label
   }
   labels
