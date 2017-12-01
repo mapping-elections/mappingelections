@@ -22,7 +22,7 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress05.tn.county")
+#' map_data <- get_county_map_data("meae.congressional.congress05.ny.county")
 #' map_counties(map_data, height = NULL)
 #'
 #' @importFrom dplyr ends_with
@@ -67,8 +67,8 @@ map_counties <- function(data, congress = NULL, projection = NULL,
 
   # Set the maximum bounds of the map
   map <- map %>%
-    leaflet::setMaxBounds(bbox[["xmin"]], bbox[["ymin"]],
-                          bbox[["xmax"]], bbox[["ymax"]])
+    leaflet::setMaxBounds(bbox[["xmin"]] - 0.1, bbox[["ymin"]] - 0.2,
+                          bbox[["xmax"]] + 0.1, bbox[["ymax"]] + 0.2)
 
   map <- map %>%
     leaflet::addPolygons(
