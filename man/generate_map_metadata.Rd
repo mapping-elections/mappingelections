@@ -10,6 +10,8 @@ generate_map_metadata(meae_id, legend = "fed-vs-anti",
 \arguments{
 \item{meae_id}{A unique Mapping Early American Elections id.}
 
+\item{legend}{A string identifying the legend to be used with this map.}
+
 \item{always_allow_html}{Default to TRUE.}
 
 \item{layout_type}{Type of html layout. Default set to maps-show.}

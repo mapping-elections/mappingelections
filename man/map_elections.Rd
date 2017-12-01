@@ -4,12 +4,16 @@
 \alias{map_counties}
 \title{Map elections data}
 \usage{
-map_counties(data, projection = NULL, congressional_boundaries = TRUE,
-  cities = 4L, width = "100\%", height = "800px", debug = FALSE)
+map_counties(data, congress = NULL, projection = NULL,
+  congressional_boundaries = TRUE, cities = 4L, width = "100\%",
+  height = "100\%")
 }
 \arguments{
 \item{data}{An \code{sf} object with elections data returned by
 \code{\link{join_to_spatial}}.}
+
+\item{congress}{The number of the Congress. If \code{NULL}, it will be
+guessed from the data.}
 
 \item{projection}{If not provided, then the best state plane projection will
 be guessed using the \code{\link[USAboundaries]{state_plane}} function from
@@ -29,14 +33,12 @@ any cities.}
 
 \item{height}{The height of the map in pixels or percentage. Passed on to
 \code{\link[leaflet]{leaflet}}.}
-
-\item{debug}{Should debugging information be displayed?}
 }
 \description{
 Map elections data
 }
 \examples{
-map_data <- get_county_map_data("meae.congressional.congress01.ga.county")
-map_counties(map_data)
+map_data <- get_county_map_data("meae.congressional.congress04.ny.county")
+map_counties(map_data, height = NULL)
 
 }

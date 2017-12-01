@@ -1,6 +1,7 @@
 #' Generate the YAML for each Congressional election map
 #'
 #' @param meae_id A unique Mapping Early American Elections id.
+#' @param legend A string identifying the legend to be used with this map.
 #' @param always_allow_html Default to TRUE.
 #' @param layout_type Type of html layout. Default set to maps-show.
 #'

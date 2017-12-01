@@ -28,5 +28,5 @@ if (getRversion() >= "2.15.1") {
                            "republican_vote", "state_name", "votes",
                            "meae_congress_candidate_totals",
                            "meae_congress_counties_parties", "meae_candidates",
-                           "congbio_url"))
+                           "congbio_url", "unopposed"))
 }
