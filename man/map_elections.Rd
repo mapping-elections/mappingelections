@@ -6,7 +6,7 @@
 \usage{
 map_counties(data, congress = NULL, projection = NULL,
   congressional_boundaries = TRUE, cities = 4L, width = "100\%",
-  height = "100\%")
+  height = "600px")
 }
 \arguments{
 \item{data}{An \code{sf} object with elections data returned by
@@ -38,7 +38,7 @@ any cities.}
 Map elections data
 }
 \examples{
-map_data <- get_county_map_data("meae.congressional.congress05.ny.county")
-map_counties(map_data, height = NULL)
+map_data <- get_county_map_data("meae.congressional.congress02.ct.county")
+map_counties(map_data)
 
 }

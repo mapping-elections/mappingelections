@@ -22,14 +22,14 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress05.ny.county")
-#' map_counties(map_data, height = NULL)
+#' map_data <- get_county_map_data("meae.congressional.congress02.ct.county")
+#' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
 #' @export
 map_counties <- function(data, congress = NULL, projection = NULL,
                           congressional_boundaries = TRUE, cities = 4L,
-                          width = "100%", height = "100%") {
+                          width = "100%", height = "600px") {
 
   stopifnot(is.logical(congressional_boundaries),
             is.numeric(cities) || cities == FALSE)
