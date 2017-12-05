@@ -67,8 +67,8 @@ map_counties <- function(data, congress = NULL, projection = NULL,
 
   # Set the maximum bounds of the map
   map <- map %>%
-    leaflet::setMaxBounds(bbox[["xmin"]] - 0.1, bbox[["ymin"]] - 0.2,
-                          bbox[["xmax"]] + 0.1, bbox[["ymax"]] + 0.2)
+    leaflet::setMaxBounds(bbox[["xmin"]] - 0.4, bbox[["ymin"]] - 0.25,
+                          bbox[["xmax"]] + 0.4, bbox[["ymax"]] + 0.25)
 
   map <- map %>%
     leaflet::addPolygons(
