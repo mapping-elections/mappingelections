@@ -88,9 +88,9 @@ results_to_table <- function(results, keep_percentage = 0.05) {
                     "data-party" = "federalist"))
 
   results_xml %>%
-    xml_find_all(".//td[text()=' Republican ']",) %>%
-    xml_set_attrs(c("class" = "party-republican",
-                    "data-party" = "republican"))
+    xml_find_all(".//td[text()=' Democratic-Republican ']",) %>%
+    xml_set_attrs(c("class" = "party-demrep",
+                    "data-party" = "demrep"))
 
   # Add attributes for candidates elected
   results_xml %>%

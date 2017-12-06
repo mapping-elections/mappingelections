@@ -22,7 +22,7 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress02.ct.county")
+#' map_data <- get_county_map_data("meae.congressional.congress05.pa.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
@@ -85,10 +85,10 @@ map_counties <- function(data, congress = NULL, projection = NULL,
       popup = popup_maker(leaflet::getMapData(map))
       # popup = ~popup_maker(county = tools::toTitleCase(tolower(name)),
       #                      federalist = federalist_vote,
-      #                      republican = republican_vote,
+      #                      demrep = demrep_vote,
       #                      other = other_vote,
       #                      fed_percent = federalist_percentage,
-      #                      rep_percent = republican_percentage,
+      #                      demrep_percent = demrep_percentage,
       #                      oth_percent = other_percentage)
     )
 
@@ -162,7 +162,7 @@ poli_chrome <- function(df) {
 
   party <- colnames(df)[max.col(df)] %>% stringr::str_replace("_percentage", "")
   percentage <- apply(df, 1, max)
-  pal_mapping <- c("federalist" = "Greens", "republican" = "Purples",
+  pal_mapping <- c("federalist" = "Greens", "demrep" = "Purples",
                    "antifederalist" = "Oranges", "other" = "Blues",
                    "potomac" = "Blues", "chesapeake" = "Reds")
   pals <- pal_mapping[party]
@@ -211,8 +211,8 @@ popup_maker <- function(df) {
                                   row$federalist_vote)
     antifeds <- votes_to_popup("Anti-Federalists", row$antifederalist_percentage,
                                row$antifederalist_vote)
-    republicans <- votes_to_popup("Republicans", row$republican_percentage,
-                               row$republican_vote)
+    demreps <- votes_to_popup("Democratic-Republicans", row$demrep_percentage,
+                               row$demrep_vote)
     chesapeake <- votes_to_popup("Chesapeake", row$chesapeake_percentage,
                                row$chesapeake_vote)
     potomac <- votes_to_popup("Potomac", row$potomac_percentage,
@@ -224,7 +224,7 @@ popup_maker <- function(df) {
     } else {
       disclaimer <- NULL
     }
-    popup <- str_c(county, districts, federalists, antifeds, republicans,
+    popup <- str_c(county, districts, federalists, antifeds, demreps,
                    chesapeake, potomac, others, disclaimer, sep = "\n")
     popups[i] <- popup
   }

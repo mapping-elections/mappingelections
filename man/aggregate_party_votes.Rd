@@ -5,7 +5,7 @@
 \title{Aggregate votes for a geographic unity by political party}
 \usage{
 aggregate_party_votes(data, geography = c("county"),
-  parties = c("Federalist", "Republican"))
+  parties = c("Federalist", "Democratic-Republican"))
 }
 \arguments{
 \item{data}{A data frame returned by \code{\link{vote_counts}}.}

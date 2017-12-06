@@ -24,9 +24,10 @@ if (getRversion() >= "2.15.1") {
                            "candidate_id", "contender", "data_frame",
                            "federalist_vote", "geography_type", "<NA>",
                            "guarantee_colnames", "other_percentage",
-                           "other_vote", "republican_percentage",
-                           "republican_vote", "state_name", "votes",
+                           "other_vote", "demrep_percentage",
+                           "demrep_vote", "state_name", "votes",
                            "meae_congress_candidate_totals",
                            "meae_congress_counties_parties", "meae_candidates",
-                           "congbio_url", "unopposed"))
+                           "congbio_url", "unopposed", "democratic-republican_vote",
+                           "democratic-republican_percentage"))
 }

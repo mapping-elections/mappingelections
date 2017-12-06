@@ -65,7 +65,7 @@ vote_counts <- function(map_id) {
 #' @export
 #' @importFrom dplyr if_else mutate
 aggregate_party_votes <- function(data, geography = c("county"),
-                                  parties = c("Federalist", "Republican")) {
+                                  parties = c("Federalist", "Democratic-Republican")) {
 
   stopifnot(is.data.frame(data))
   geography <- match.arg(geography)
@@ -127,12 +127,14 @@ aggregate_party_votes <- function(data, geography = c("county"),
 
   ## Make sure to make data NA if there are no votes
   output <- output %>%
-    mutate(federalist_vote = if_else(county_vote == 0, NA_real_, federalist_vote)) %>%
-    mutate(republican_vote = if_else(county_vote == 0, NA_real_, republican_vote)) %>%
-    mutate(other_vote = if_else(county_vote == 0, NA_real_, other_vote)) %>%
-    mutate(federalist_percentage = if_else(county_vote == 0, NA_real_, federalist_percentage)) %>%
-    mutate(other_percentage = if_else(county_vote == 0, NA_real_, other_percentage)) %>%
-    mutate(republican_percentage = if_else(county_vote == 0, NA_real_, republican_percentage))
+    dplyr::rename(demrep_vote = `democratic-republican_vote`,
+           demrep_percentage = `democratic-republican_percentage`) %>%
+    dplyr::mutate(federalist_vote = if_else(county_vote == 0, NA_real_, federalist_vote)) %>%
+    dplyr::mutate(demrep_vote = if_else(county_vote == 0, NA_real_, demrep_vote)) %>%
+    dplyr::mutate(other_vote = if_else(county_vote == 0, NA_real_, other_vote)) %>%
+    dplyr::mutate(federalist_percentage = if_else(county_vote == 0, NA_real_, federalist_percentage)) %>%
+    dplyr::mutate(other_percentage = if_else(county_vote == 0, NA_real_, other_percentage)) %>%
+    dplyr::mutate(demrep_percentage = if_else(county_vote == 0, NA_real_, demrep_percentage))
 
   # Add basic metadata back in
   output <- output %>%
