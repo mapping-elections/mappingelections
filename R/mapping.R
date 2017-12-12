@@ -82,6 +82,7 @@ map_counties <- function(data, congress = NULL, projection = NULL,
       fillOpacity = 1,
       fillColor = colors,
       label = label_maker(leaflet::getMapData(map)),
+      labelOptions = leaflet::labelOptions(direction = "auto"),
       popup = popup_maker(leaflet::getMapData(map))
       # popup = ~popup_maker(county = tools::toTitleCase(tolower(name)),
       #                      federalist = federalist_vote,
