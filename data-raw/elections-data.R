@@ -35,7 +35,6 @@ meae_congressional_counties <- read_csv("data-raw/elections-data/congressional-c
                                           candidate = col_character(),
                                           candidate_id = col_character(),
                                           party = col_character(),
-                                          party_id = col_character(),
                                           vote = col_integer()
                                         ))
 
