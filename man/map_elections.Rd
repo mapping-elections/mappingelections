@@ -5,8 +5,8 @@
 \title{Map elections data}
 \usage{
 map_counties(data, congress = NULL, projection = NULL,
-  congressional_boundaries = TRUE, cities = 4L, width = "100\%",
-  height = "600px")
+  congressional_boundaries = TRUE, cities = 4L, state = NULL,
+  width = "100\%", height = "600px")
 }
 \arguments{
 \item{data}{An \code{sf} object with elections data returned by
@@ -28,6 +28,8 @@ addition to county boundaries?}
 \item{cities}{Number of largest cities to draw. Pass \code{FALSE} to not draw
 any cities.}
 
+\item{state}{Override the guessing of the state from the data passed in.}
+
 \item{width}{The width of the map in pixels or percentage. Passed on to
 \code{\link[leaflet]{leaflet}}.}
 
@@ -38,7 +40,7 @@ any cities.}
 Map elections data
 }
 \examples{
-map_data <- get_county_map_data("meae.congressional.congress05.pa.county")
+map_data <- get_county_map_data("meae.congressional.congress03.ky.county")
 map_counties(map_data)
 
 }

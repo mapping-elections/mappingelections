@@ -10,6 +10,7 @@
 #'   Web Mercator projection will be used. To use a custom projection, provide a
 #'   projection/CRS object returned by the \code{\link[leaflet]{leafletCRS}}
 #'   function in the \code{leaflet} package.
+#' @param state Override the guessing of the state from the data passed in.
 #' @param congressional_boundaries Draw Congressional district boundaries in
 #'   addition to county boundaries?
 #' @param cities Number of largest cities to draw. Pass \code{FALSE} to not draw
@@ -22,19 +23,23 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress05.pa.county")
+#' map_data <- get_county_map_data("meae.congressional.congress03.ky.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
 #' @export
 map_counties <- function(data, congress = NULL, projection = NULL,
-                          congressional_boundaries = TRUE, cities = 4L,
-                          width = "100%", height = "600px") {
+                         congressional_boundaries = TRUE, cities = 4L,
+                         state = NULL, width = "100%", height = "600px") {
 
   stopifnot(is.logical(congressional_boundaries),
             is.numeric(cities) || cities == FALSE)
 
-  statename_to_filter <- most_common_state(data$state_terr)
+  if (is.null(state)) {
+    statename_to_filter <- most_common_state(data$state_terr)
+  } else {
+    statename_to_filter <- state
+  }
   state_to_filter <- USAboundaries::state_codes %>%
     dplyr::filter(state_name == statename_to_filter) %>%
     dplyr::pull(state_abbr)
