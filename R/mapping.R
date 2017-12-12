@@ -62,7 +62,7 @@ map_counties <- function(data, congress = NULL, projection = NULL,
                           options = leaflet::leafletOptions(
                             crs = projection,
                             zoomControl = FALSE, dragging = TRUE,
-                            minZoom = 8, maxZoom = 12
+                            minZoom = 7, maxZoom = 12
                             ))
 
   # Set the maximum bounds of the map
