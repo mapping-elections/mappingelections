@@ -23,8 +23,10 @@ most_common_year <- function(years) {
   as.integer(names(sort(table(stats::na.omit(years)), decreasing = TRUE))[1])
 }
 
-most_common_state <- function(years) {
-  names(sort(table(stats::na.omit(years)), decreasing = TRUE))[1]
+most_common_state <- function(states) {
+  out <- names(sort(table(stats::na.omit(states)), decreasing = TRUE))[1]
+  out <- ifelse(out == "Vermont Republic", "Vermont", out)
+  out
 }
 
 replace_with_zero <- function(x) { ifelse(is.na(x), 0, x) }
