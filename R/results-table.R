@@ -53,6 +53,8 @@ results_to_table <- function(results, keep_percentage = 0.05) {
                   winner, congbio_url, unopposed) %>%
     dplyr::mutate(contender = (percent_vote > keep_percentage) | winner) %>%
     dplyr::mutate(candidate = ifelse(contender, candidate, "Other candidates"),
+                  candidate = ifelse(stringr::str_detect(candidate, "scattering"),
+                                     "Other candidates", candidate),
                   party = ifelse(contender, party, "")) %>%
     dplyr::group_by(election_id, district, candidate, party, winner, congbio_url) %>%
     dplyr::summarize(vote = sum(vote),
