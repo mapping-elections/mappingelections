@@ -155,12 +155,14 @@ aggregate_party_votes <- function(data, geography = c("county"),
 #'   being mapped.
 #' @param resolution Use \code{"high"} or \code{"low"} resolution geographic
 #'   data.
+#' @param election_date The date to use when getting the county boundaries.
 #'
 #' @return A \code{sf} object with polygons for the appropriate geographies and
 #'   the data joined to them.
 #'
 #' @export
-join_to_spatial <- function(party_votes, elections, resolution = c("high", "low")) {
+join_to_spatial <- function(party_votes, elections, resolution = c("high", "low"),
+                            election_date = NULL) {
 
   stopifnot(is.data.frame(party_votes))
   stopifnot(is.data.frame(elections))
@@ -174,7 +176,11 @@ join_to_spatial <- function(party_votes, elections, resolution = c("high", "low"
   if (state_to_filter == "Massachusetts" && year < 1820) {
     state_to_filter <- c("Massachusetts", "Maine")
   }
-  map_date <- as.Date(paste0(year, "-01-01"))
+  if (is.null(election_date)) {
+    map_date <- as.Date(paste0(year, "-01-01"))
+  } else {
+    map_date <- as.Date(election_date)
+  }
 
   spatial <- USAboundaries::us_counties(map_date = map_date,
                                         resolution = resolution,
@@ -189,11 +195,12 @@ join_to_spatial <- function(party_votes, elections, resolution = c("high", "low"
 
 #' Get the data to map party vote percentages by county
 #' @param map_id The ID of the map from \code{meae_maps}.
+#' @param election_date The date to be used when getting the county boundaries.
 #'
 #' @examples
 #' get_county_map_data("meae.congressional.congress01.nc.county")
 #' @export
-get_county_map_data <- function(map_id) {
+get_county_map_data <- function(map_id, election_date = NULL) {
   stopifnot(is.character(map_id),
             length(map_id) == 1)
   meae_map <- meae_maps %>% dplyr::filter(meae_id == map_id)
@@ -202,6 +209,6 @@ get_county_map_data <- function(map_id) {
     dplyr::left_join(meae_elections, by = "election_id", suffix = c("_map", ""))
   party_votes <- meae_map %>%
     dplyr::left_join(meae_congress_counties_parties, by = "meae_id")
-  map_data <- join_to_spatial(party_votes, elections)
+  map_data <- join_to_spatial(party_votes, elections, election_date = election_date)
   map_data
 }

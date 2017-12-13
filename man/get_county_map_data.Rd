@@ -4,10 +4,12 @@
 \alias{get_county_map_data}
 \title{Get the data to map party vote percentages by county}
 \usage{
-get_county_map_data(map_id)
+get_county_map_data(map_id, election_date = NULL)
 }
 \arguments{
 \item{map_id}{The ID of the map from \code{meae_maps}.}
+
+\item{election_date}{The date to be used when getting the county boundaries.}
 }
 \description{
 Get the data to map party vote percentages by county

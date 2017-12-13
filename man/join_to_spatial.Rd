@@ -4,7 +4,8 @@
 \alias{join_to_spatial}
 \title{Join aggregated party data to spatial data}
 \usage{
-join_to_spatial(party_votes, elections, resolution = c("high", "low"))
+join_to_spatial(party_votes, elections, resolution = c("high", "low"),
+  election_date = NULL)
 }
 \arguments{
 \item{party_votes}{A data frame of vote percentages by party.}
@@ -14,6 +15,8 @@ being mapped.}
 
 \item{resolution}{Use \code{"high"} or \code{"low"} resolution geographic
 data.}
+
+\item{election_date}{The date to use when getting the county boundaries.}
 }
 \value{
 A \code{sf} object with polygons for the appropriate geographies and
