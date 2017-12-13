@@ -2,7 +2,7 @@
 #'
 #' @param map_id An ID from the \code{meae_maps} table.
 #' @examples
-#' map_id <- "meae.congressional.congress03.va.county"
+#' map_id <- "meae.congressional.congress04.sc.county"
 #' candidate_results(map_id)
 #' @rdname results-table
 #' @importFrom dplyr select

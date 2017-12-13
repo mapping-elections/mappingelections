@@ -23,7 +23,7 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress03.ky.county")
+#' map_data <- get_county_map_data("meae.congressional.congress04.tn.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
