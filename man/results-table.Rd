@@ -22,9 +22,9 @@ Get a table of results by candidate and Congressional district
 Format candidate results in an HTML table
 }
 \examples{
-map_id <- "meae.congressional.congress04.sc.county"
+map_id <- "meae.congressional.congress05.nh.county"
 candidate_results(map_id)
-map_id <- "meae.congressional.congress03.va.county"
+map_id <- "meae.congressional.congress05.nh.county"
 results <- candidate_results(map_id)
 results_to_table(results)
 }

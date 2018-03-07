@@ -2,7 +2,7 @@
 #'
 #' @param map_id An ID from the \code{meae_maps} table.
 #' @examples
-#' map_id <- "meae.congressional.congress04.sc.county"
+#' map_id <- "meae.congressional.congress05.nh.county"
 #' candidate_results(map_id)
 #' @rdname results-table
 #' @importFrom dplyr select
@@ -32,7 +32,7 @@ candidate_results <- function(map_id) {
 #'   xml_find_first
 #' @export
 #' @examples
-#' map_id <- "meae.congressional.congress03.va.county"
+#' map_id <- "meae.congressional.congress05.nh.county"
 #' results <- candidate_results(map_id)
 #' results_to_table(results)
 #' @rdname results-table
@@ -55,7 +55,9 @@ results_to_table <- function(results, keep_percentage = 0.05) {
     dplyr::mutate(candidate = ifelse(contender, candidate, "Other candidates"),
                   candidate = ifelse(stringr::str_detect(candidate, "scattering"),
                                      "Other candidates", candidate),
-                  party = ifelse(contender, party, "")) %>%
+                  party = ifelse(contender, party, NA_character_),
+                  congbio_url = ifelse(candidate == "Other candidates",
+                                       NA_character_, congbio_url)) %>%
     dplyr::group_by(election_id, district, candidate, party, winner, congbio_url) %>%
     dplyr::summarize(vote = sum(vote),
                      percent_vote = sum(percent_vote),
