@@ -55,8 +55,8 @@ meae_congress_counties_parties <-
              chesapeake_percentage = col_double(),
              potomac_vote = col_integer(),
              potomac_percentage = col_double(),
-             quid_vote = col_integer(),
-             quid_percentage = col_double(),
+             dissrep_vote = col_integer(),
+             dissrep_percentage = col_double(),
              other_vote = col_integer(),
              other_percentage = col_double(),
              county_source = col_character()
