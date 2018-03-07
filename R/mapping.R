@@ -170,7 +170,8 @@ poli_chrome <- function(df) {
   percentage <- apply(df, 1, max)
   pal_mapping <- c("federalist" = "Greens", "demrep" = "Purples",
                    "antifederalist" = "Oranges", "other" = "Blues",
-                   "potomac" = "Blues", "chesapeake" = "Reds")
+                   "potomac" = "Blues", "chesapeake" = "Reds",
+                   "dissrep" = "Reds")
   pals <- pal_mapping[party]
 
   pos <- cut(percentage, breaks = seq(0, 1, 0.2), labels = FALSE)
