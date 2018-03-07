@@ -23,7 +23,7 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress04.tn.county")
+#' map_data <- get_county_map_data("meae.congressional.congress09.va.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
@@ -224,6 +224,8 @@ popup_maker <- function(df) {
                                row$chesapeake_vote)
     potomac <- votes_to_popup("Potomac", row$potomac_percentage,
                                row$potomac_vote)
+    dissreps <- votes_to_popup("Dissenting Republicans", row$dissrep_percentage,
+                               row$dissrep_vote)
     others <- votes_to_popup("Unaffiliated or other parties", row$other_percentage,
                                row$other_vote)
     if (!is.na(row$county_source) && row$county_source == "district") {
@@ -231,7 +233,7 @@ popup_maker <- function(df) {
     } else {
       disclaimer <- NULL
     }
-    popup <- str_c(county, districts, federalists, antifeds, demreps,
+    popup <- str_c(county, districts, federalists, antifeds, demreps, dissreps,
                    chesapeake, potomac, others, disclaimer, sep = "\n")
     popups[i] <- popup
   }
