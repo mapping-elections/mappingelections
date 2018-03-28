@@ -198,7 +198,7 @@ join_to_spatial <- function(party_votes, elections, resolution = c("high", "low"
 #' @param election_date The date to be used when getting the county boundaries.
 #'
 #' @examples
-#' get_county_map_data("meae.congressional.congress01.nc.county")
+#' get_county_map_data("meae.congressional.congress06.de.county")
 #' @export
 get_county_map_data <- function(map_id, election_date = NULL) {
   stopifnot(is.character(map_id),

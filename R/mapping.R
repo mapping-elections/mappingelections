@@ -140,14 +140,14 @@ map_counties <- function(data, congress = NULL, projection = NULL,
     decade <- unique(stats::na.omit(decade))
     if (decade < 1790L) decade <- 1790L
     city_locations <- USAboundaries::us_cities(map_date = decade) %>%
-      dplyr::filter(state %in% state_to_filter,
+      dplyr::filter(state_abbr %in% state_to_filter,
                     population > 100) %>%
-      dplyr::group_by(state) %>%
+      dplyr::group_by(state_abbr) %>%
       dplyr::top_n(cities, population)
 
     if (nrow(city_locations) > 0) {
       map <- map %>%
-        leaflet::addCircleMarkers(data = city_locations, lat = ~lat, lng = ~lon,
+        leaflet::addCircleMarkers(data = city_locations,
                                   stroke = TRUE, color = "#333", opacity = 1, weight = 1.5,
                                   fill = TRUE, fillColor = "#eaf945", fillOpacity = 1,
                                   radius = 5,
