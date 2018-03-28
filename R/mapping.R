@@ -25,7 +25,7 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress08.oh.county")
+#' map_data <- get_county_map_data("meae.congressional.congress08.md.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
@@ -194,10 +194,17 @@ get_color <- function(pal, i) {
 
 #' @importFrom stringr str_c
 label_maker <- function(df) {
+
+  if (any(unique(df$state_abbr) %in% c("SC", "LA"))) {
+    county_label <- ""
+  } else {
+    county_label <- " County"
+  }
+
   labels <- vector("character", nrow(df))
   for (i in seq_len(nrow(df))) {
     row <- df[i, ]
-    county <- str_c(tools::toTitleCase(tolower(row$name)), " County")
+    county <- str_c(tools::toTitleCase(tolower(row$name)), county_label)
     district_word <- ifelse(stringr::str_detect(row$district, ", "),
                             "Districts", "District")
     district <- str_c(district_word, " ", row$district)
@@ -214,10 +221,17 @@ label_maker <- function(df) {
 
 #' @importFrom stringr str_c
 popup_maker <- function(df) {
+
+  if (any(unique(df$state_abbr) %in% c("SC", "LA"))) {
+    county_label <- ""
+  } else {
+    county_label <- " County"
+  }
+
   popups <- vector("character", nrow(df))
   for (i in seq_len(nrow(df))) {
     row <- df[i, ]
-    county <- str_c("<b>", tools::toTitleCase(tolower(row$name)), " County</b><br/>")
+    county <- str_c("<b>", tools::toTitleCase(tolower(row$name)), county_label, "</b><br/>")
     districts <- str_c("Congressional District: ", row$districts, "<br/>")
     if (is.na(districts)) districts <- NULL
     federalists <- votes_to_popup("Federalists", row$federalist_percentage,
