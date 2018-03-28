@@ -13,6 +13,8 @@
 #' @param state Override the guessing of the state from the data passed in.
 #' @param congressional_boundaries Draw Congressional district boundaries in
 #'   addition to county boundaries?
+#' @param state_boundaries Draw state boundaries in addition to county
+#'   boundaries?
 #' @param cities Number of largest cities to draw. Pass \code{FALSE} to not draw
 #'   any cities.
 #' @param width The width of the map in pixels or percentage. Passed on to
@@ -23,13 +25,15 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress05.ny.county")
+#' map_data <- get_county_map_data("meae.congressional.congress08.oh.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
 #' @export
 map_counties <- function(data, congress = NULL, projection = NULL,
-                         congressional_boundaries = TRUE, cities = 4L,
+                         congressional_boundaries = TRUE,
+                         state_boundaries = FALSE,
+                         cities = 4L,
                          state = NULL, width = "100%", height = "600px") {
 
   suppressPackageStartupMessages(require(sf))
@@ -100,24 +104,24 @@ map_counties <- function(data, congress = NULL, projection = NULL,
       #                      oth_percent = other_percentage)
     )
 
-  # if (state_boundaries) {
-  #   state_names <- USAboundaries::state_codes %>%
-  #     dplyr::filter(state_abbr %in% state_to_filter)
-  #   state_sf <- USAboundaries::us_states(map_date = unique(data$map_date),
-  #                                        resolution = "high",
-  #                                        states = state_names$state_name)
-  #   map <- map %>%
-  #     leaflet::addPolygons(
-  #       data = state_sf,
-  #       # layerId = "state",
-  #       stroke = TRUE,
-  #       smoothFactor = 1,
-  #       color = "#222",
-  #       opacity = 1,
-  #       weight = 3,
-  #       fill = NULL
-  #     )
-  # }
+  if (state_boundaries) {
+    state_names <- USAboundaries::state_codes %>%
+      dplyr::filter(state_abbr %in% state_to_filter)
+    state_sf <- USAboundaries::us_states(map_date = unique(data$map_date),
+                                         resolution = "high",
+                                         states = state_names$state_name)
+    map <- map %>%
+      leaflet::addPolygons(
+        data = state_sf,
+        # layerId = "state",
+        stroke = TRUE,
+        smoothFactor = 1,
+        color = "#222",
+        opacity = 1,
+        weight = 3,
+        fill = NULL
+      )
+  }
 
   if (congressional_boundaries) {
     congress_sf <- histcongress %>%
