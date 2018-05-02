@@ -25,7 +25,7 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress08.md.county")
+#' map_data <- get_county_map_data("meae.congressional.congress09.va.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
@@ -119,7 +119,7 @@ map_counties <- function(data, congress = NULL, projection = NULL,
         color = "#222",
         opacity = 1,
         weight = 3,
-        fill = NULL
+        fill = FALSE
       )
   }
 
@@ -137,7 +137,7 @@ map_counties <- function(data, congress = NULL, projection = NULL,
         color = "#222",
         opacity = 1,
         weight = 3,
-        fill = NULL
+        fill = FALSE
       )
   }
 
@@ -188,7 +188,7 @@ poli_chrome <- function(df) {
 
 # Takes an RColorBrewer palette and the position in that palette
 get_color <- function(pal, i) {
-  if (is.na(i)) return("#C7C7C7") # return grey for missing values
+  if (is.na(i)) return("#FFFFFF") # return white for missing values
   RColorBrewer::brewer.pal(5, pal)[i]
 }
 
