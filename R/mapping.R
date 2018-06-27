@@ -175,9 +175,10 @@ poli_chrome <- function(df) {
   party <- colnames(df)[max.col(df)] %>% stringr::str_replace("_percentage", "")
   percentage <- apply(df, 1, max)
   pal_mapping <- c("federalist" = "Greens", "demrep" = "Purples",
-                   "antifederalist" = "Oranges", "other" = "Blues",
+                   "antifederalist" = "Oranges", "other" = "Greys",
                    "potomac" = "Blues", "chesapeake" = "Reds",
-                   "dissrep" = "Reds")
+                   "repfac" = "Oranges",
+                   "adamsclay" = "Reds", "jacksonian" = "Blues")
   pals <- pal_mapping[party]
 
   pos <- cut(percentage, breaks = seq(0, 1, 0.2), labels = FALSE)
@@ -244,16 +245,21 @@ popup_maker <- function(df) {
                                row$chesapeake_vote)
     potomac <- votes_to_popup("Potomac", row$potomac_percentage,
                                row$potomac_vote)
-    dissreps <- votes_to_popup("Dissenting Republicans", row$dissrep_percentage,
-                               row$dissrep_vote)
+    repfacs <- votes_to_popup("Republican faction", row$repfac_percentage,
+                               row$repfac_vote)
+    adamsclay <- votes_to_popup("Adams/Clay supporters", row$adamsclay_percentage,
+                                row$adamsclay_vote)
+    jacksonian <- votes_to_popup("Jacksonian supporters", row$jacksonian_percentage,
+                                 row$jacksonian_vote)
     others <- votes_to_popup("Unaffiliated or other parties", row$other_percentage,
-                               row$other_vote)
+                             row$other_vote)
     if (!is.na(row$county_source) && row$county_source == "district") {
       disclaimer <- "<br/><span class='county-disclaimer'>County-level returns are not available for this county, so party percentages for the district as a whole have been displayed.</span>"
     } else {
       disclaimer <- NULL
     }
-    popup <- str_c(county, districts, federalists, antifeds, demreps, dissreps,
+    popup <- str_c(county, districts, federalists, antifeds, demreps,
+                   adamsclay, jacksonian, repfacs,
                    chesapeake, potomac, others, disclaimer, sep = "\n")
     popups[i] <- popup
   }
