@@ -36,8 +36,6 @@ map_counties <- function(data, congress = NULL, projection = NULL,
                          cities = 4L,
                          state = NULL, width = "100%", height = "600px") {
 
-  suppressPackageStartupMessages(require(sf))
-
   stopifnot(is.logical(congressional_boundaries),
             is.numeric(cities) || cities == FALSE)
 

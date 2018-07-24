@@ -15,5 +15,5 @@ get_county_map_data(map_id, election_date = NULL)
 Get the data to map party vote percentages by county
 }
 \examples{
-get_county_map_data("meae.congressional.congress01.nc.county")
+get_county_map_data("meae.congressional.congress06.de.county")
 }
