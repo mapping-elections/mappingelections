@@ -26,7 +26,7 @@ Depends:
     R (>= 3.4.0),
     USAboundaries (>= 0.3.1),
     USAboundariesData (>= 0.3.1),
-    sf (>= 0.6.4)
+    sf (>= 0.6.3)
 Imports:
     dplyr,
     knitr,
