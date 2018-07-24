@@ -58,10 +58,7 @@ map_counties <- function(data, congress = NULL, projection = NULL,
 
   if (is.null(projection)) {
     # Use the state plane projection
-    projection <- leaflet::leafletCRS(crsClass = "L.Proj.CRS",
-      code = paste("ESRI:", USAboundaries::state_plane(state_to_filter), sep = ""),
-      proj4def = USAboundaries::state_plane(state_to_filter, type = "proj4"),
-      resolutions = 1.5^(35:1))
+    projection <- make_leaflet_crs(state_to_filter)
   } else {
     stopifnot(inherits(projection, "leaflet_crs"))
   }
@@ -71,7 +68,7 @@ map_counties <- function(data, congress = NULL, projection = NULL,
   # Instantiate the map with the data and the projection
   map <- leaflet::leaflet(data, width = width, height = height,
                           options = leaflet::leafletOptions(
-                            # crs = projection,
+                            crs = projection,
                             zoomControl = FALSE, dragging = TRUE,
                             minZoom = 7, maxZoom = 12
                             ))
@@ -275,4 +272,16 @@ votes_to_popup <- function(party, percentage, vote) {
   }
   out <- str_c(out, "<br/>")
   out
+}
+
+# Make a leaflet CRS from a state name
+make_leaflet_crs <- function(state) {
+    epsg <- USAboundaries::state_plane(state, type = "epsg")
+    proj4 <- USAboundaries::state_plane(state, type = "proj4")
+    leaflet::leafletCRS(
+      crsClass = "L.Proj.CRS",
+      code = sprintf("ESRI:%s", epsg),
+      proj4def = proj4,
+      resolutions = 2^(20:0)
+      )
 }
