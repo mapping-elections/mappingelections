@@ -14,10 +14,12 @@ Given the path to an NNV file with election results in NNV, return the totals
 by geography for each candidate.
 }
 \examples{
+\dontrun{
 file1 <- "~/dev/mapping-elections/nnv-xml/New York/1789/ny.uscongress1.1789.xml"
 file2 <- "~/dev/mapping-elections/nnv-xml/Virginia/1789/va.uscongress.7.1789.xml"
 file3 <- "~/dev/mapping-elections/nnv-xml/Tennessee/1801/tn.congress.1801.xml"
 parse_nnv_xml(file1)
 parse_nnv_xml(file2)
 parse_nnv_xml(file3)
+}
 }

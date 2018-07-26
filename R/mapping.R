@@ -36,8 +36,6 @@ map_counties <- function(data, congress = NULL, projection = NULL,
                          cities = 4L,
                          state = NULL, width = "100%", height = "600px") {
 
-  suppressPackageStartupMessages(require(sf))
-
   stopifnot(is.logical(congressional_boundaries),
             is.numeric(cities) || cities == FALSE)
 
@@ -50,11 +48,40 @@ map_counties <- function(data, congress = NULL, projection = NULL,
     dplyr::filter(state_name == statename_to_filter) %>%
     dplyr::pull(state_abbr)
 
-  bbox <- sf::st_bbox(data)
-
   if (is.null(congress)) {
     congress <- unique(stats::na.omit(data$congress))[1]
   }
+
+  if (congressional_boundaries) {
+    # Get the Congressional data now if needed
+    congress_sf <- histcongress %>%
+      dplyr::filter(statename %in% statename_to_filter,
+             startcong <= congress,
+             congress <= endcong,
+             district != -1)
+  }
+
+  # Calculate the bounding box. Sometimes the state/counties are bigger;
+  # sometimes the Congressional district is bigger.
+  bbox_counties <- as.list(sf::st_bbox(data))
+  if (congressional_boundaries) {
+    bbox <- as.list(sf::st_bbox(congress_sf))
+    # Now get the biggest bounding box
+    bbox$xmin <- min(bbox$xmin, bbox_counties$xmin)
+    bbox$ymin <- min(bbox$ymin, bbox_counties$ymin)
+    bbox$xmax <- max(bbox$xmax, bbox_counties$xmax)
+    bbox$ymax <- max(bbox$ymax, bbox_counties$ymax)
+  } else {
+    # If we are not using Congressional boundaries, just use the counties boundaries
+    bbox <- bbox_counties
+  }
+  # Now add a minimum padding based on the size of the state
+  lng_pad <- max((bbox$xmax - bbox$xmin) * 0.15, 0.45)
+  lat_pad <- max((bbox$ymax - bbox$ymin) * 0.15, 0.45)
+  bbox$xmin <- bbox$xmin - lng_pad
+  bbox$xmax <- bbox$xmax + lng_pad
+  bbox$ymin <- bbox$ymin - lat_pad
+  bbox$ymax <- bbox$ymax + lat_pad
 
   if (is.null(projection)) {
     # Use the state plane projection
@@ -75,8 +102,7 @@ map_counties <- function(data, congress = NULL, projection = NULL,
 
   # Set the maximum bounds of the map
   map <- map %>%
-    leaflet::setMaxBounds(bbox[["xmin"]] - 0.4, bbox[["ymin"]] - 0.25,
-                          bbox[["xmax"]] + 0.4, bbox[["ymax"]] + 0.25)
+    leaflet::setMaxBounds(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax)
 
   map <- map %>%
     leaflet::addPolygons(
@@ -121,11 +147,6 @@ map_counties <- function(data, congress = NULL, projection = NULL,
   }
 
   if (congressional_boundaries) {
-    congress_sf <- histcongress %>%
-      dplyr::filter(statename %in% statename_to_filter,
-             startcong <= congress,
-             congress <= endcong,
-             district != -1)
     map <- map %>%
       leaflet::addPolygons(
         data = congress_sf,

@@ -5,6 +5,7 @@
 #'
 #' @importFrom dplyr %>%
 #' @import USAboundaries
+#' @import USAboundariesData
 #' @import sf
 NULL
 

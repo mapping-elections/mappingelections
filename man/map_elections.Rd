@@ -5,8 +5,8 @@
 \title{Map elections data}
 \usage{
 map_counties(data, congress = NULL, projection = NULL,
-  congressional_boundaries = TRUE, cities = 4L, state = NULL,
-  width = "100\%", height = "600px")
+  congressional_boundaries = TRUE, state_boundaries = FALSE, cities = 4L,
+  state = NULL, width = "100\%", height = "600px")
 }
 \arguments{
 \item{data}{An \code{sf} object with elections data returned by
@@ -25,6 +25,9 @@ function in the \code{leaflet} package.}
 \item{congressional_boundaries}{Draw Congressional district boundaries in
 addition to county boundaries?}
 
+\item{state_boundaries}{Draw state boundaries in addition to county
+boundaries?}
+
 \item{cities}{Number of largest cities to draw. Pass \code{FALSE} to not draw
 any cities.}
 
@@ -40,7 +43,7 @@ any cities.}
 Map elections data
 }
 \examples{
-map_data <- get_county_map_data("meae.congressional.congress09.va.county")
+map_data <- get_county_map_data("meae.congressional.congress01.ny.county")
 map_counties(map_data)
 
 }
