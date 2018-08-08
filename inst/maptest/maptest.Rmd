@@ -1,0 +1,75 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This document tests the appears of the maps created by the project.
+
+```{r setup, message=FALSE}
+library(tidyverse)
+library(mappingelections)
+```
+
+## Palette mappings
+
+```{r}
+mappingelections:::pal_mapping
+```
+
+## Federalists vs Antifederalists vs Other
+
+```{r}
+"meae.congressional.congress01.ny.county" %>% 
+  get_county_map_data() %>% 
+  map_counties()
+```
+
+## Potomac vs Chesapeake vs Other
+
+```{r}
+"meae.congressional.congress02.md.county" %>% 
+  get_county_map_data() %>% 
+  map_counties()
+```
+
+## Federalists vs Republicans
+
+```{r}
+"meae.congressional.congress06.ri.county" %>% 
+  get_county_map_data() %>% 
+  map_counties()
+```
+
+## Federalists vs Republican vs Republican Faction vs Other
+
+```{r}
+"meae.congressional.congress10.pa.county" %>% 
+  get_county_map_data() %>% 
+  map_counties()
+```
+
+## Adams/Clay vs Jacksonian
+
+```{r}
+"meae.congressional.congress18.la.county" %>% 
+  get_county_map_data() %>% 
+  filter(!is.na(state_abbr),
+         cross_ref != "New to dataset") %>%
+  arrange(!is.na(federalist_percentage), !is.na(demrep_percentage), 
+          cnty_type == "Parish") %>% 
+  map_counties()
+```
+
+## Federalist, DemRep + RepFac, Adams/Clay + Jacksonian, Other
+
+```{r}
+"meae.congressional.congress18.nc.county" %>% 
+  get_county_map_data() %>% 
+  map_counties()
+```
+
+```{r}
+"meae.congressional.congress18.oh.county" %>% 
+  get_county_map_data() %>% 
+  map_counties()
+```
