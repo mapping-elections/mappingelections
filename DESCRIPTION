@@ -43,5 +43,5 @@ Encoding: UTF-8
 LazyData: yes
 URL: https://github.com/mapping-elections/mappingelections
 BugReports: https://github.com/mapping-elections/mappingelections/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Suggests: testthat

@@ -192,11 +192,6 @@ poli_chrome <- function(df) {
 
   party <- colnames(df)[max.col(df)] %>% stringr::str_replace("_percentage", "")
   percentage <- apply(df, 1, max)
-  pal_mapping <- c("federalist" = "Greens", "demrep" = "Purples",
-                   "antifederalist" = "Oranges", "other" = "Greys",
-                   "potomac" = "Blues", "chesapeake" = "Reds",
-                   "repfac" = "Oranges",
-                   "adamsclay" = "Reds", "jacksonian" = "Blues")
   pals <- pal_mapping[party]
 
   pos <- cut(percentage, breaks = seq(0, 1, 0.2), labels = FALSE)
@@ -306,3 +301,14 @@ make_leaflet_crs <- function(state) {
       resolutions = 2^(20:0)
       )
 }
+
+# Mapping of parties to palettes
+pal_mapping <- c("federalist" = "Greens",
+                 "antifederalist" = "Oranges",
+                 "demrep" = "Purples",
+                 "repfac" = "Oranges",
+                 "adamsclay" = "Reds",
+                 "jacksonian" = "Blues",
+                 "other" = "RdPu",
+                 "potomac" = "Blues",
+                 "chesapeake" = "Reds")
