@@ -235,8 +235,8 @@ map_national <- function(data, congress = NULL,
     bbox <- bbox_counties
   }
   # Now add a minimum padding based on the size of the state
-  lng_pad <- max((bbox$xmax - bbox$xmin) * 0.15, 0.45)
-  lat_pad <- max((bbox$ymax - bbox$ymin) * 0.15, 0.45)
+  lng_pad <- max((bbox$xmax - bbox$xmin) * 0.05, 0.40)
+  lat_pad <- max((bbox$ymax - bbox$ymin) * 0.05, 0.40)
   bbox$xmin <- bbox$xmin - lng_pad
   bbox$xmax <- bbox$xmax + lng_pad
   bbox$ymin <- bbox$ymin - lat_pad
