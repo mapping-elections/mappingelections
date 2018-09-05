@@ -183,6 +183,138 @@ map_counties <- function(data, congress = NULL, projection = NULL,
 
 }
 
+#' Map the Congressional data for the nation
+#'
+#' @param data An \code{sf} object with elections data returned by
+#'   \code{\link{join_to_spatial}}.
+#' @param congress The number of the Congress. If \code{NULL}, it will be
+#'   guessed from the data.
+#' @param congressional_boundaries Draw Congressional district boundaries in
+#'   addition to county boundaries?
+#' @param state_boundaries Draw state boundaries in addition to county
+#'   boundaries?
+#' @param width The width of the map in pixels or percentage. Passed on to
+#'   \code{\link[leaflet]{leaflet}}.
+#' @param height The height of the map in pixels or percentage. Passed on to
+#'   \code{\link[leaflet]{leaflet}}.
+#' @examples
+#' map_data <- get_national_map_data("meae.congressional.congress01.national.county")
+#' map_national(map_data)
+#' @export
+map_national <- function(data, congress = NULL,
+                         congressional_boundaries = TRUE,
+                         state_boundaries = FALSE,
+                         width = "100%", height = "800px") {
+
+  stopifnot(is.logical(congressional_boundaries))
+
+  if (is.null(congress)) {
+    congress <- unique(stats::na.omit(data$congress))[1]
+  }
+
+  if (congressional_boundaries) {
+    # Get the Congressional data now if needed
+    congress_sf <- histcongress %>%
+      dplyr::filter(startcong <= congress,
+                    congress <= endcong,
+                    district != -1)
+  }
+
+  # Calculate the bounding box. Sometimes the state/counties are bigger;
+  # sometimes the Congressional district is bigger.
+  bbox_counties <- as.list(sf::st_bbox(data))
+  if (congressional_boundaries) {
+    bbox <- as.list(sf::st_bbox(congress_sf))
+    # Now get the biggest bounding box
+    bbox$xmin <- min(bbox$xmin, bbox_counties$xmin)
+    bbox$ymin <- min(bbox$ymin, bbox_counties$ymin)
+    bbox$xmax <- max(bbox$xmax, bbox_counties$xmax)
+    bbox$ymax <- max(bbox$ymax, bbox_counties$ymax)
+  } else {
+    # If we are not using Congressional boundaries, just use the counties boundaries
+    bbox <- bbox_counties
+  }
+  # Now add a minimum padding based on the size of the state
+  lng_pad <- max((bbox$xmax - bbox$xmin) * 0.15, 0.45)
+  lat_pad <- max((bbox$ymax - bbox$ymin) * 0.15, 0.45)
+  bbox$xmin <- bbox$xmin - lng_pad
+  bbox$xmax <- bbox$xmax + lng_pad
+  bbox$ymin <- bbox$ymin - lat_pad
+  bbox$ymax <- bbox$ymax + lat_pad
+
+  projection <- leaflet::leafletCRS(
+      crsClass = "L.Proj.CRS",
+      code = "ESRI:102003",
+      proj4def = "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=37.5 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs",
+      resolutions = 2^(20:0)
+    )
+
+  colors <- poli_chrome(dplyr::as_data_frame(data))
+
+  # Instantiate the map with the data and the projection
+  map <- leaflet::leaflet(data, width = width, height = height,
+                          options = leaflet::leafletOptions(
+                            crs = projection,
+                            zoomControl = FALSE, dragging = TRUE,
+                            minZoom = 7, maxZoom = 12
+                            ))
+
+  # Set the maximum bounds of the map
+  map <- map %>%
+    leaflet::setMaxBounds(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax)
+
+  map <- map %>%
+    leaflet::addPolygons(
+      # layerId = "county",
+      stroke = TRUE,
+      smoothFactor = 1,
+      color = "#bbb",
+      opacity = 1,
+      weight = 2,
+      dashArray = "5, 5",
+      fillOpacity = 1,
+      fillColor = colors,
+      label = label_maker(leaflet::getMapData(map), states = TRUE),
+      labelOptions = leaflet::labelOptions(direction = "auto"),
+      popup = popup_maker(leaflet::getMapData(map))
+    )
+
+  # if (state_boundaries) {
+  #   state_names <- USAboundaries::state_codes %>%
+  #     dplyr::filter(state_abbr %in% state_to_filter)
+  #   state_sf <- USAboundaries::us_states(map_date = unique(data$map_date),
+  #                                        resolution = "high",
+  #                                        states = state_names$state_name)
+  #   map <- map %>%
+  #     leaflet::addPolygons(
+  #       data = state_sf,
+  #       # layerId = "state",
+  #       stroke = TRUE,
+  #       smoothFactor = 1,
+  #       color = "#222",
+  #       opacity = 1,
+  #       weight = 3,
+  #       fill = FALSE
+  #     )
+  # }
+
+  if (congressional_boundaries) {
+    map <- map %>%
+      leaflet::addPolygons(
+        data = congress_sf,
+        stroke = TRUE,
+        smoothFactor = 1,
+        color = "#222",
+        opacity = 1,
+        weight = 3,
+        fill = FALSE
+      )
+  }
+
+  map
+
+}
+
 # Get the colors from the data
 poli_chrome <- function(df) {
   # The data frame will contain the percentages for various groups.
@@ -207,7 +339,7 @@ get_color <- function(pal, i) {
 }
 
 #' @importFrom stringr str_c
-label_maker <- function(df) {
+label_maker <- function(df, states = FALSE) {
 
   if (any(unique(df$state_abbr) %in% c("SC", "LA"))) {
     county_label <- ""
@@ -219,6 +351,11 @@ label_maker <- function(df) {
   for (i in seq_len(nrow(df))) {
     row <- df[i, ]
     county <- str_c(tools::toTitleCase(tolower(row$name)), county_label)
+    if (!is.na(row$state_name)) {
+      state <- str_c(", ", row$state_name)
+    } else {
+      state <- NULL
+    }
     district_word <- ifelse(stringr::str_detect(row$district, ", "),
                             "Districts", "District")
     district <- str_c(district_word, " ", row$district)
@@ -227,7 +364,16 @@ label_maker <- function(df) {
       } else if (district == "District At-large") {
         district <- "At-large district"
       }
-    label <- str_c(county, district, sep = " / ")
+    if (states) {
+      if (is.null(district)) {
+        label <- str_c(county, state)
+      } else {
+        label <- sprintf("%s, %s / %s", county, state, district)
+        label <- str_c(county, state, " / ", district)
+      }
+    } else {
+      label <- str_c(county, district, sep = " / ")
+    }
     labels[i] <- label
   }
   labels
@@ -245,7 +391,13 @@ popup_maker <- function(df) {
   popups <- vector("character", nrow(df))
   for (i in seq_len(nrow(df))) {
     row <- df[i, ]
-    county <- str_c("<b>", tools::toTitleCase(tolower(row$name)), county_label, "</b><br/>")
+    if (!is.na(row$state_name)) {
+      state <- str_c(", ", row$state_name)
+    } else {
+      state <- NULL
+    }
+    county <- str_c("<b>", tools::toTitleCase(tolower(row$name)), county_label,
+                    state, "</b><br/>")
     districts <- str_c("Congressional District: ", row$districts, "<br/>")
     if (is.na(districts)) districts <- NULL
     federalists <- votes_to_popup("Federalists", row$federalist_percentage,

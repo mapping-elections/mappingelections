@@ -43,7 +43,7 @@ any cities.}
 Map elections data
 }
 \examples{
-map_data <- get_county_map_data("meae.congressional.congress01.ny.county")
+map_data <- get_county_map_data("meae.congressional.congress19.nc.county")
 map_counties(map_data)
 
 }
