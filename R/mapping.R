@@ -25,7 +25,7 @@
 #' @rdname map_elections
 #'
 #' @examples
-#' map_data <- get_county_map_data("meae.congressional.congress01.ny.county")
+#' map_data <- get_county_map_data("meae.congressional.congress19.nc.county")
 #' map_counties(map_data)
 #'
 #' @importFrom dplyr ends_with
@@ -264,6 +264,10 @@ popup_maker <- function(df) {
                                 row$adamsclay_vote)
     jacksonian <- votes_to_popup("Jacksonian supporters", row$jacksonian_percentage,
                                  row$jacksonian_vote)
+    caucus <- votes_to_popup("Caucus", row$caucus_percentage,
+                                row$caucus_vote)
+    anticaucus <- votes_to_popup("Anti-Caucus", row$anticaucus_percentage,
+                                row$anticaucus_vote)
     others <- votes_to_popup("Unaffiliated or other parties", row$other_percentage,
                              row$other_vote)
     if (!is.na(row$county_source) && row$county_source == "district") {
@@ -272,7 +276,7 @@ popup_maker <- function(df) {
       disclaimer <- NULL
     }
     popup <- str_c(county, districts, federalists, antifeds, demreps,
-                   adamsclay, jacksonian, repfacs,
+                   adamsclay, jacksonian, caucus, anticaucus, repfacs,
                    chesapeake, potomac, others, disclaimer, sep = "\n")
     popups[i] <- popup
   }
@@ -311,4 +315,6 @@ pal_mapping <- c("federalist" = "Greens",
                  "jacksonian" = "Blues",
                  "other" = "RdPu",
                  "potomac" = "Blues",
-                 "chesapeake" = "Reds")
+                 "chesapeake" = "Reds",
+                 "caucus" = "Blues",
+                 "anticaucus" = "Reds")

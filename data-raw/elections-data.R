@@ -43,7 +43,7 @@ meae_congress_counties_parties <-
            col_types = cols(
              meae_id = col_character(),
              county_ahcb = col_character(),
-             county_fips = col_integer(),
+             county_fips = col_character(),
              districts = col_character(),
              federalist_vote = col_integer(),
              federalist_percentage = col_double(),
@@ -61,6 +61,10 @@ meae_congress_counties_parties <-
              adamsclay_percentage = col_double(),
              jacksonian_vote = col_integer(),
              jacksonian_percentage = col_double(),
+             anticaucus_vote = col_integer(),
+             anticaucus_percentage = col_double(),
+             caucus_vote = col_integer(),
+             caucus_percentage = col_double(),
              other_vote = col_integer(),
              other_percentage = col_double(),
              county_source = col_character()
