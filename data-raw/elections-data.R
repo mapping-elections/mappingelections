@@ -130,10 +130,11 @@ meae_congbio_elected <- read_csv("data-raw/elections-data/congbio_elected.csv",
                                    meae_id = col_character()
                                  ))
 
-devtools::use_data(meae_candidates, meae_congressional_counties, meae_elections,
-                   meae_maps_to_elections, meae_maps,
-                   meae_congress_counties_parties, nnv_name_authorities,
-                   meae_congress_candidate_totals,
-                   meae_congress_candidate_totals_all,
-                   meae_congbio_elected,
-                   overwrite = TRUE)
+usethis::use_data(meae_candidates, meae_congressional_counties, meae_elections,
+                  meae_maps_to_elections, meae_maps,
+                  meae_congress_counties_parties, nnv_name_authorities,
+                  meae_congress_candidate_totals,
+                  meae_congress_candidate_totals_all,
+                  meae_congbio_elected,
+                  overwrite = TRUE)
+
