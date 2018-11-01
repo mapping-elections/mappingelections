@@ -173,10 +173,10 @@ join_to_spatial <- function(party_votes, elections, resolution = c("high", "low"
     dplyr::left_join(USAboundaries::state_codes, by = "state_abbr")
   year <- most_common_year(elections$year)
   state_to_filter <- state$state_name
-  if (!is.na(state_to_filter) && state_to_filter == "Massachusetts" && year < 1820) {
+  if (!any(is.na(state_to_filter)) && state_to_filter == "Massachusetts" && year < 1820) {
     state_to_filter <- c("Massachusetts", "Maine")
   }
-  if (is.na(state_to_filter)) {
+  if (any(is.na(state_to_filter))) {
     state_to_filter <- NULL
   }
   if (is.null(election_date)) {
