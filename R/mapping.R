@@ -468,5 +468,5 @@ pal_mapping <- c("federalist" = "Greens",
                  "other" = "RdPu",
                  "potomac" = "Blues",
                  "chesapeake" = "Reds",
-                 "caucus" = "Blues",
-                 "anticaucus" = "Reds")
+                 "caucus" = "Reds",
+                 "anticaucus" = "Blues")
