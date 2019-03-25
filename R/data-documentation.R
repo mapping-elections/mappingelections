@@ -32,6 +32,9 @@
 #' @rdname meae_data
 "meae_congress_candidate_totals_all"
 
+#' @rdname meae_data
+"meae_congressional_elections_dates"
+
 #' Historic Congressional district boundaries
 #'
 #' @format sf polygons object

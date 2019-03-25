@@ -97,6 +97,15 @@ meae_congress_candidate_totals_all <-
              overview = col_integer()
            ))
 
+meae_congressional_elections_dates <-
+  read_csv("data-raw/elections-data/congressional-elections-dates.csv",
+           col_types = cols(
+             congress = col_integer(),
+             state = col_character(),
+             meae_id = col_character(),
+             map_date = col_integer()
+           ))
+
 meae_maps_to_elections <- read_csv("data-raw/elections-data/maps-to-elections.csv",
                                    col_types = cols(
                                      meae_id = col_character(),
@@ -135,6 +144,7 @@ usethis::use_data(meae_candidates, meae_congressional_counties, meae_elections,
                   meae_congress_counties_parties, nnv_name_authorities,
                   meae_congress_candidate_totals,
                   meae_congress_candidate_totals_all,
+                  meae_congressional_elections_dates,
                   meae_congbio_elected,
                   overwrite = TRUE)
 
