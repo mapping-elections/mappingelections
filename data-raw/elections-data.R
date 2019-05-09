@@ -103,7 +103,7 @@ meae_congressional_elections_dates <-
              congress = col_integer(),
              state = col_character(),
              meae_id = col_character(),
-             map_date = col_integer()
+             map_date = col_date()
            ))
 
 meae_maps_to_elections <- read_csv("data-raw/elections-data/maps-to-elections.csv",
