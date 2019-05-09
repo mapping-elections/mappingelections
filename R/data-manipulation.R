@@ -228,12 +228,29 @@ get_national_map_data <- function(map_id) {
   meae_state_maps <- meae_maps %>%
     dplyr::filter(congress == meae_national_map$congress,
                   geography == "county",
-                  level == "state")
+                  level == "state") %>%
+    dplyr::left_join(meae_congressional_elections_dates, by = c("meae_id", "congress", "state"))
   party_votes <- meae_state_maps %>%
     dplyr::left_join(meae_congress_counties_parties, by = "meae_id")
   elections <- meae_national_map %>%
     dplyr::left_join(meae_maps_to_elections, by = "meae_id") %>%
     dplyr::left_join(meae_elections, by = "election_id", suffix = c("_map", ""))
-  map_data <- join_to_spatial(party_votes, elections)
+
+  geog_combined <- NULL
+
+  for (i in seq_len(nrow(meae_state_maps))) {
+    state <- meae_state_maps[[i, "state"]]
+    date <- meae_state_maps[[i, "map_date"]]
+    # message("State: ", state, ". Date: ", date, ".")
+    if (state == "MA" && date <= as.Date("1820-01-01")) state <- c("MA", "ME")
+    geog <- USAboundaries::us_counties(date, "high", state)
+    if (is.null(geog_combined)) {
+      geog_combined <- geog
+    } else {
+      geog_combined <- rbind(geog_combined, geog)
+    }
+  }
+
+  map_data <- dplyr::left_join(geog_combined, party_votes, by = c("id" = "county_ahcb"))
   map_data
 }
