@@ -30,10 +30,13 @@
 "nnv_name_authorities"
 
 #' @rdname meae_data
-"meae_congress_candidate_totals_all"
+"meae_congressional_elections_dates"
 
 #' @rdname meae_data
-"meae_congressional_elections_dates"
+"meae_staterepresentative_counties_parties"
+
+#' @rdname meae_data
+"meae_staterepresentative_candidate_totals"
 
 #' Historic Congressional district boundaries
 #'

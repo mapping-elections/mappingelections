@@ -128,11 +128,61 @@ meae_congbio_elected <- read_csv("data-raw/elections-data/congbio_elected.csv",
                                    meae_id = col_character()
                                  ))
 
+meae_staterepresentative_counties_parties <-
+  read_csv("data-raw/elections-data/staterepresentative-counties-parties.csv",
+           col_types = cols(
+             meae_id = col_character(),
+             county_ahcb = col_character(),
+             county_fips = col_character(),
+             districts = col_character(),
+             federalist_vote = col_integer(),
+             federalist_percentage = col_double(),
+             antifederalist_vote = col_integer(),
+             antifederalist_percentage = col_double(),
+             demrep_vote = col_integer(),
+             demrep_percentage = col_double(),
+             chesapeake_vote = col_integer(),
+             chesapeake_percentage = col_double(),
+             potomac_vote = col_integer(),
+             potomac_percentage = col_double(),
+             repfac_vote = col_integer(),
+             repfac_percentage = col_double(),
+             adamsclay_vote = col_integer(),
+             adamsclay_percentage = col_double(),
+             jacksonian_vote = col_integer(),
+             jacksonian_percentage = col_double(),
+             anticaucus_vote = col_integer(),
+             anticaucus_percentage = col_double(),
+             caucus_vote = col_integer(),
+             caucus_percentage = col_double(),
+             other_vote = col_integer(),
+             other_percentage = col_double(),
+             county_source = col_character()
+           ))
+
+meae_staterepresentative_candidate_totals <-
+  read_csv("data-raw/elections-data/staterepresentative-candidate-totals.csv",
+           col_types = cols(
+             meae_id = col_character(),
+             election_id = col_character(),
+             candidate = col_character(),
+             candidate_id = col_character(),
+             district = col_character(),
+             party = col_character(),
+             vote = col_integer(),
+             total_vote = col_integer(),
+             percent_vote = col_double(),
+             winner = col_logical(),
+             unopposed = col_logical()
+           ))
+
 usethis::use_data(meae_candidates, meae_congressional_counties, meae_elections,
                   meae_maps_to_elections, meae_maps,
                   meae_congress_counties_parties, nnv_name_authorities,
                   meae_congress_candidate_totals,
                   meae_congressional_elections_dates,
                   meae_congbio_elected,
+                  meae_staterepresentative_counties_parties,
+                  meae_staterepresentative_candidate_totals,  
                   overwrite = TRUE)
 
