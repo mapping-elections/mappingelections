@@ -254,3 +254,36 @@ get_national_map_data <- function(map_id) {
   map_data <- dplyr::left_join(geog_combined, party_votes, by = c("id" = "county_ahcb"))
   map_data
 }
+
+#' Get the spatial data to map party vote percentages by county for state legislative elections
+#' @param map_id The ID of the map from \code{meae_maps}.
+#' @param state The state that the map should display.
+#' @param election_date The date to be used when getting the county boundaries.
+#' @return An sf spatial data frame joined to the election data.
+#'
+#' @examples
+#' get_staterep_map_data("meae.staterepresentative.1796.de.county", state = "DE",
+#'                       election_date = "1796-10-01")
+#' @export
+#' @importFrom dplyr starts_with
+get_staterep_map_data <- function(map_id, state = NULL, election_date = NULL) {
+  stopifnot(is.character(map_id),
+            length(map_id) == 1,
+            is.character(state),
+            length(state) == 1)
+  meae_map <- meae_maps %>% dplyr::filter(meae_id == map_id)
+  party_votes <- meae_map %>%
+    dplyr::left_join(meae_staterepresentative_counties_parties, by = "meae_id") %>%
+    dplyr::select(-dplyr::starts_with("X"))
+
+  spatial <- USAboundaries::us_counties(map_date = election_date,
+                                        resolution = "high",
+                                        states = state) %>%
+    dplyr::mutate(id = as.character(id))
+
+  map_data <- dplyr::left_join(spatial, party_votes, by = c("id" = "county_ahcb")) %>%
+    dplyr::mutate(map_date = election_date)
+
+  map_data
+}
+

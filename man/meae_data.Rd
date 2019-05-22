@@ -11,7 +11,9 @@
 \alias{meae_congress_candidate_totals}
 \alias{meae_congbio_elected}
 \alias{nnv_name_authorities}
-\alias{meae_congress_candidate_totals_all}
+\alias{meae_congressional_elections_dates}
+\alias{meae_staterepresentative_counties_parties}
+\alias{meae_staterepresentative_candidate_totals}
 \title{Elections data from Mapping Early American Elections}
 \format{Data frames}
 \usage{
@@ -33,7 +35,11 @@ meae_congbio_elected
 
 nnv_name_authorities
 
-meae_congress_candidate_totals_all
+meae_congressional_elections_dates
+
+meae_staterepresentative_counties_parties
+
+meae_staterepresentative_candidate_totals
 }
 \description{
 Elections data from Mapping Early American Elections
