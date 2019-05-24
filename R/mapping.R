@@ -398,7 +398,7 @@ popup_maker <- function(df) {
     }
     county <- str_c("<b>", tools::toTitleCase(tolower(row$name)), county_label,
                     state, "</b><br/>")
-    districts <- str_c("Congressional District: ", row$districts, "<br/>")
+    districts <- str_c("District: ", row$districts, "<br/>")
     if (is.na(districts)) districts <- NULL
     federalists <- votes_to_popup("Federalists", row$federalist_percentage,
                                   row$federalist_vote)

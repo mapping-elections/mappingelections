@@ -282,7 +282,7 @@ get_staterep_map_data <- function(map_id, state = NULL, election_date = NULL) {
     dplyr::mutate(id = as.character(id))
 
   map_data <- dplyr::left_join(spatial, party_votes, by = c("id" = "county_ahcb")) %>%
-    dplyr::mutate(map_date = election_date)
+    dplyr::mutate(map_date = as.Date(election_date))
 
   map_data
 }
