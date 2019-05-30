@@ -32,5 +32,6 @@ if (getRversion() >= "2.15.1") {
                            "congbio_url", "unopposed", "democratic-republican_vote",
                            "democratic-republican_percentage",
                            "geography", "level", "meae_staterepresentative_counties_parties",
+                           "meae_staterepresentative_candidate_totals",
                            "meae_congressional_elections_dates" ))
 }
