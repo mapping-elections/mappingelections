@@ -20,7 +20,7 @@ meae_elections <- read_csv("data-raw/elections-data/elections.csv",
                              election_office = col_character(),
                              state = col_character(),
                              congress = col_integer(),
-                             district = col_integer(),
+                             district = col_character(),
                              year = col_integer(),
                              election_type = col_character()
                            ))
